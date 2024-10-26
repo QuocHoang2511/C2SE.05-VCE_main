@@ -1,0 +1,47 @@
+html
+  head
+    title= title
+    link(rel="stylesheet" href="/css/bootstrap.min.css")
+    link(rel="stylesheet" href="/css/font-awesome/css/font-awesome.min.css")
+    link(rel="stylesheet" href="/stylesheets/login.css")
+
+  body
+    section.signup-block
+      include ../partials/flash
+      .container
+        .row
+          .col-md-4.signup-sec
+            h2.text-center Sign Up Now
+            form.signup-form(action='/api/v1/auth/signup' method="POST")
+              .form-group
+                label.text-uppercase(for='username') Username
+                input#username.form-control(type='text' placeholder='Username' name='username')
+              .form-group
+                label.text-uppercase(for='email') Email
+                input#email.form-control(type='email' placeholder='Email' name='email')
+              .form-group
+                label.text-uppercase(for='avatar') Avatar URL
+                input#avatar.form-control(type='text' placeholder='Avatar URL' name='avatar')
+              .form-group
+                label.text-uppercase(for='address') Address
+                input#address.form-control(type='text' placeholder='Address' name='address')
+              .form-group
+                label.text-uppercase(for='phone') Phone
+                input#phone.form-control(type='text' placeholder='Phone' name='phone')
+              .form-group
+                label.text-uppercase(for='password') Password
+                input#password.form-control(type='password' placeholder='Password' name='password')
+              .form-group
+                label.text-uppercase(for='confirmPassword') Confirm Password
+                input#confirmPassword.form-control(type='password' placeholder='Confirm Password' name='confirmPassword')
+              button.mt-2.btn.btn-signup.float-right(type='submit' value='Signup') Sign Up
+
+            .copy-text
+              | Created with 
+              i.fa.fa-heart
+              |  by Grafreez
+          .col-md-8.banner-sec
+            // Carousel section can be included here if needed
+    script(type="text/javascript" src="/javascripts/generated/signup.js")
+    script(type="text/javascript" src="/js/vue.min.js")
+    script(type="text/javascript" src="/js/jquery.min.js")
