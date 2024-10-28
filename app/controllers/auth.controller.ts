@@ -7,9 +7,9 @@ import { ApplicationController } from ".";
 
 export class AuthController extends ApplicationController {
   public async loginWithGoogle(req: Request, res: Response) {
-    res.redirect(
-      `https://accounts.google.com/o/oauth2/v2/auth?client_id=${env.googleClientId}&redirect_uri=${env.googleRedirectUri}&response_type=code&scope=profile email`
-    );
+    const googleOAuthURL = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${env.googleClientId}&redirect_uri=${env.googleRedirectUri}&response_type=code&scope=profile email`;
+    console.log("Google OAuth URL:", googleOAuthURL);
+    res.redirect(googleOAuthURL);
   }
 
   public async loginWithGoogleRedirect(req: Request, res: Response) {
@@ -23,7 +23,6 @@ export class AuthController extends ApplicationController {
       redirect_uri: env.googleRedirectUri,
       grant_type: "authorization_code",
     });
-
     const { data: googleUser } = await axios.get(
       "https://www.googleapis.com/oauth2/v1/userinfo",
       {
@@ -32,7 +31,6 @@ export class AuthController extends ApplicationController {
         },
       }
     );
-
     const loginUser = (await models.User.findOne({
       where: {
         email: googleUser.email,
