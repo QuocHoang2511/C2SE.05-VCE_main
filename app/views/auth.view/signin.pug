@@ -49,7 +49,11 @@ html
                     button.btn.btn-signup(type='submit' value='Signup') Sign Up
                 .col-12.mb-3.text-center
                   .form-group
-                    a.btn.btn-google.btn-block(href='/auth/google')
+                    button.btn.btn-signup(type='submit' value='Signup') 
+                      a.nav-link(href='/api/v1/auth/signup') SignUp
+                .col-12.mb-3.text-center
+                  .form-group
+                    a.btn.btn-google.btn-block(href='/api/v1/auth/google')
                       i.fa.fa-google-plus-square
                       |  Đăng nhập bằng Google
 
