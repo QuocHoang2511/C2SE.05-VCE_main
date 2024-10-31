@@ -75,6 +75,58 @@ export class AuthController extends ApplicationController {
     res.render("auth.view/signin");
   }
 
+  public async forgotPasswordUserIndex(req: Request, res: Response) {
+    res.render("auth.view/forgotpassword"); // Hiển thị form quên mật khẩu
+  }
+
+  public async forgotPasswordUser(req: Request, res: Response) {
+    const { email } = req.body;
+
+    const user = await models.User.findOne({
+      where: { email },
+    });
+
+    if (!user) {
+      // Kiểm tra nếu không tìm thấy người dùng
+      req.flash("errors", { msg: "Email không tồn tại." });
+      res.redirect("/api/v1/auth/forgotpassword"); // Quay lại trang Forgot Password nếu email không tồn tại
+    } else {
+      req.flash("success", { msg: "Email đã được gửi. Vui lòng kiểm tra!" });
+      res.redirect(`/api/v1/auth/setpassword/${email}`); // Chuyển tới trang setpassword nếu email tồn tại
+      console.log(email);
+    }
+  }
+  public async setPasswordUserIndex(req: Request, res: Response) {
+    const { email } = req.params; // Lấy email từ params
+    res.render("auth.view/setpassword", { email }); // Truyền email vào template
+  }
+  public async setPasswordUser(req: Request, res: Response) {
+    const { confirmPassword, password } = req.body;
+    const { email } = req.params; // Lấy email từ params
+
+    console.log("Email từ params:", email); // Kiểm tra giá trị email
+    console.log("Dữ liệu từ form:", req.body); // Kiểm tra dữ liệu từ form
+
+    const user = (await models.User.findOne({
+      where: { email },
+    })) as UserInstance;
+
+    if (!user) {
+      console.log(`Không tìm thấy người dùng với email: ${email}`); // Thêm thông tin debug
+      req.flash("errors", { msg: "Người dùng không tồn tại." });
+      return res.redirect("/api/v1/auth/forgotpassword");
+    }
+
+    // Cập nhật mật khẩu mới
+    await models.User.update(
+      { password }, // Dữ liệu cần cập nhật
+      { where: { email } } // Điều kiện
+    );
+
+    req.flash("success", { msg: "Đặt lại mật khẩu thành công." });
+    res.redirect("/api/v1/auth/signin");
+  }
+
   public async createUser(req: Request, res: Response) {
     const { confirmPassword, password } = req.body;
     console.log(req.body); // Kiểm tra dữ liệu từ form
@@ -109,14 +161,20 @@ export class AuthController extends ApplicationController {
   public async create(req: Request, res: Response) {
     const { email, password } = req.body;
 
-    const user = await models.User.findOne({
+    const user = (await models.User.findOne({
       where: {
         email,
         password: password,
       },
-    });
+    })) as UserInstance;
 
     if (user) {
+      const User = (req.session.user = {
+        id: user.id,
+        username: user.username,
+        avatar: user.avatar,
+      });
+      console.log(" User=req.session: ", User);
       req.flash("success", { msg: "Login successfully" });
       res.redirect("/");
     } else {

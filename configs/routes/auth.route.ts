@@ -20,6 +20,14 @@ export class AuthRoute {
     this.path
       .route("/signin")
       .get(this.authController.index, this.authController.create);
+    this.path
+      .route("/forgotpassword")
+      .get(this.authController.forgotPasswordUserIndex) // Hiển thị form quên mật khẩu
+      .post(this.authController.forgotPasswordUser); // Xử lý gửi form quên mật khẩu
+    this.path
+      .route("/setpassword/:email")
+      .get(this.authController.setPasswordUserIndex)
+      .post(this.authController.setPasswordUser); // Đảm bảo định nghĩa chính xác
     Route.resource(this.path, this.authController, {
       only: [
         RestActions.Destroy,
