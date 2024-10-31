@@ -20,9 +20,8 @@ nav#mainNav.navbar.navbar-expand-lg.navbar-dark.navbar-shrink.fixed-top
             a.nav-link(href='/api/v1/auth/signin') Login
         - else
           li.nav-item
-            a.nav-link(href='/carts') Cart
-          li.nav-item
+            img(style='width: 40px; height: 40px; border-radius: 50%' src=`${User.avatar}` alt='Avatar')
+            span.nav-link= User.username
             form.nav-link(method='POST' action='/auth?_method=DELETE')
-              img(style='width: 40px; height: 40px; border-radius: 50%' src=`${User.avatarUrl}`)
               button.btn.btn-danger(type="submit")
                 | Logout
