@@ -1,0 +1,40 @@
+extends ../layout
+
+block content
+
+  html
+    head
+      link(rel="stylesheet" href="/css/bootstrap.min.css")
+      link(rel="stylesheet" href="/css/font-awesome/css/font-awesome.min.css")
+      link(rel="stylesheet" href="/stylesheets/style.css")
+      link(rel="stylesheet" href="/stylesheets/profile/editprofile.css")
+
+    section
+      // Header
+      header.header
+        h1 Profile
+        .button-header
+          button.logout-button(onclick="confirmLogout()") Logout
+
+      .container
+        // Sidebar
+        aside.sidebar
+          .profile-info
+            img.profile-pic(src="/images/img/team/1.jpg" alt='Avatar')
+            p.name #{User.username}
+            p.email #{User.email}
+          nav.menu
+            h3 Account
+            ul
+              li
+                a(href="/api/v1/user/editprofile") Personal Profile
+              li
+                a(href="/api/v1/user/changepassword") Change Password
+              li
+                a(href="/favorites") Favorites
+              li
+                a(href="/restaurantrecommendation") Restaurant Recommendation
+
+        // Main Content
+        section.main-content
+          block main-content 

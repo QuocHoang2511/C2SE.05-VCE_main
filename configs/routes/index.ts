@@ -4,6 +4,7 @@ import { Router } from "express";
 import { RestActions } from "../enum";
 import { AuthRoute } from "./auth.route";
 import { DevRoute } from "./dev.route";
+import { UserRoute } from "./user.route";
 export class Route {
   private static path = Router();
   private static homeController = new HomeController();
@@ -12,6 +13,7 @@ export class Route {
     if (env.nodeEnv === "development") this.path.use("/dev", DevRoute.draw());
 
     this.path.use("/api/v1/auth", AuthRoute.draw());
+    this.path.use("/api/v1/user", UserRoute.draw());
 
     Route.resource(this.path, this.homeController, {
       only: [RestActions.Index],

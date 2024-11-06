@@ -23,7 +23,7 @@ export = {
       },
 
       avatar: {
-        type: Sequelize.STRING,
+        type: Sequelize.BLOB,
       },
 
       phone: {

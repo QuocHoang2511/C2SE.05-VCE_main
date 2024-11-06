@@ -2,6 +2,7 @@ import { RestActions } from "@configs/enum";
 import { AuthController } from "@controllers";
 import { Router } from "express";
 import { Route } from ".";
+import { uploadToFolder } from "../fileUpload";
 
 export class AuthRoute {
   private static path = Router();
@@ -12,11 +13,14 @@ export class AuthRoute {
     this.path
       .route("/google/callback")
       .get(this.authController.loginWithGoogleRedirect);
+    this.path.route("/logout").delete(this.authController.destroy);
 
+    this.path;
     this.path
       .route("/signup")
-      .get(this.authController.new)
-      .post(this.authController.createUser);
+      .post(uploadToFolder.single("avatar"), this.authController.createUser)
+      .get(this.authController.new);
+
     this.path
       .route("/signin")
       .get(this.authController.index, this.authController.create);

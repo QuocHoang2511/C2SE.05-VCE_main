@@ -8,20 +8,21 @@ nav#mainNav.navbar.navbar-expand-lg.navbar-dark.navbar-shrink.fixed-top
     #navbarResponsive.collapse.navbar-collapse
       ul.navbar-nav.text-uppercase.ms-auto.py-4.py-lg-0
         li.nav-item
-          a.nav-link(href='/courses') Courses
+          a.nav-link(href='/') Trang Chủ
         li.nav-item
-          a.nav-link(href='#services') Services
+          a.nav-link(href='#services') Khám Phá
         li.nav-item
-          a.nav-link(href='#about') About
+          a.nav-link(href='#about') Trải Nghiệm
         li.nav-item
-          a.nav-link(href='#team') Team
+          a.nav-link(href='#team') Liên Hệ
         - if (!User)
           li.nav-item
             a.nav-link(href='/api/v1/auth/signin') Login
         - else
-          li.nav-item
-            img(style='width: 40px; height: 40px; border-radius: 50%' src=`${User.avatar}` alt='Avatar')
-            span.nav-link= User.username
-            form.nav-link(method='POST' action='/auth?_method=DELETE')
-              button.btn.btn-danger(type="submit")
-                | Logout
+          li.nav-item.d-flex.align-items-center
+            //- img(style='width: 40px; height: 40px; border-radius: 50%; margin-right: 10px;' src=`data:image/png;base64,${User.avatar.toString('base64')}` alt='Avatar')
+            img(style='width: 40px; height: 40px; border-radius: 50%; margin-right: 10px;' src=`/images/img/team/1.jpg` alt='Avatar')
+            .d-flex.flex-column
+              a.nav-link(href='/api/v1/user/profile' style='padding: 0;')= User.username
+              form(method='POST' action='/api/v1/auth/logout?_method=DELETE')
+                button.btn.btn-danger.btn-sm(type="submit") Logout

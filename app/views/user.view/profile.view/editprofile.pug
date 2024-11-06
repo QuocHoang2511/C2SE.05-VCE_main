@@ -1,0 +1,23 @@
+extends ../profile
+
+block main-content
+  h2 Personal Information
+  form.profile-form(action='/api/v1/user/editprofile' method="POST")
+    .form-group
+      label(for="username") Username:
+      input#username(type="username" name="username" placeholder=`${User.username}` value=`${User.username}`)
+
+    .form-group
+      label(for="address") Address:
+      input#address(type="address" name="address" placeholder=`${User.adress}` value=`${User.adress}`)
+
+    .form-group
+      label(for="email") Email:
+      input#email(type="email" name="email" placeholder=`${User.email}` value=`${User.email}`)
+
+    .form-group
+      label(for="phone") Phone Number:
+      input#phone(type="phone" name="phone" placeholder=`${User.phone}` value=`${User.phone}`)
+
+    .form-buttons
+      button.update-button(type="submit") Update

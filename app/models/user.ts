@@ -36,7 +36,7 @@ export const User = sequelize.define("User", {
   username: Sequelize.STRING,
   email: Sequelize.STRING,
   password: Sequelize.STRING,
-  avatar: Sequelize.STRING,
+  avatar: Sequelize.BLOB,
   phone: Sequelize.STRING,
   adress: Sequelize.STRING,
   role: Sequelize.INTEGER,

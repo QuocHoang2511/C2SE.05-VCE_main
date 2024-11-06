@@ -18,7 +18,7 @@ module.exports = {
                 type: Sequelize.STRING
             },
             avatar: {
-                type: Sequelize.STRING
+                type: Sequelize.BLOB
             },
             phone: {
                 type: Sequelize.STRING

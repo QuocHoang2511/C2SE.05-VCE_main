@@ -1,0 +1,417 @@
+/* Reset mặc định */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+/* Định dạng header */
+.header {
+  background-color: #FF7008;
+  color: #fff;
+  height: 100px;
+  padding: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header h1 {
+  font-size: 24px;
+  margin-left: 20px;
+}
+
+.logout-button {
+  background-color: #ff3300;
+  color: #fff;
+  border: none;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-right: 20px;
+  margin-bottom: 10px;
+  display: block;
+  width: 100px;
+  font-weight: bolder;
+}
+
+.logout-button:hover {
+  background-color: #f8f8f8;
+  color: #ff3300;
+}
+
+/* Định dạng tổng thể container */
+.container {
+  display: flex;
+  padding: 20px;
+}
+
+/* Định dạng sidebar */
+.sidebar {
+  width: 25%;
+  background-color: #f8f8f8;
+  border-right: 1px solid #e0e0e0;
+  max-width: 100%;
+  min-width: 300px;
+  overflow-wrap: break-word;
+}
+
+.menu {
+  border: 1px solid #bfbdbd;
+  max-width: 100%;
+  min-width: 300px;
+  height: 350px;
+}
+
+.menu h3 {
+  margin: 30px 40px;
+
+}
+
+.menu ul li {
+  margin: 30px 50px;
+
+}
+
+.profile-info {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.profile-pic {
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  margin-bottom: 10px;
+}
+
+.name {
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.email {
+  color: #666;
+  font-size: 14px;
+}
+
+.menu ul {
+  list-style-type: none;
+}
+
+.menu li {
+  margin: 10px 0;
+}
+
+.menu a {
+  text-decoration: none;
+  color: #333;
+  font-size: 16px;
+}
+
+.menu a.active {
+  color: #FF7008;
+  font-weight: bold;
+}
+
+/* Định dạng nội dung chính */
+.main-content {
+  width: 75%;
+  padding: 20px;
+  border: 1px solid #bfbdbd;
+}
+
+.profile-info-display {
+  margin-bottom: 20px;
+  /* Space between the info and buttons */
+
+}
+
+.profile-info-display p {
+  font-size: 16px;
+  /* Font size for the info text */
+  line-height: 1.5;
+  /* Line height for better readability */
+  margin: 30px 0;
+  /* Space between each information item */
+}
+
+strong {
+  font-weight: bold;
+  /* Make the labels bold */
+  color: #333;
+  /* Darker color for the labels */
+}
+
+.main-content h2 {
+  font-size: 20px;
+  color: #FF7008;
+  margin-bottom: 20px;
+}
+
+/*edit profile*/
+.main-content-edit {
+  padding: 20px;
+  margin-left: 50px;
+  border: 1px solid #bfbdbd;
+  width: 100%;
+  max-width: 1000px;
+}
+
+.main-content-edit h2 {
+  font-size: 20px;
+  color: #ff6600;
+  margin-bottom: 50px;
+}
+
+.profile-form label {
+  display: block;
+  margin-bottom: 5px;
+  color: #666;
+}
+
+.profile-form input[type="text"],
+.profile-form input[type="email"],
+.profile-form input[type="tel"],
+.profile-form input[type="date"] {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #e0e0e0;
+  border-radius: 5px;
+}
+
+.form-buttons {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.update-button {
+  background-color: #fff;
+  color: #FF7008;
+  border: 1px solid #FF7008;
+  padding: 10px 20px;
+  border-radius: 60px;
+  cursor: pointer;
+}
+
+.update-button:hover {
+  background-color: #FF7008;
+  color: #fff;
+}
+
+.cancel-button {
+  background-color: transparent;
+  color: #FF7008;
+  border: 1px solid #FF7008;
+  padding: 10px 20px;
+  border-radius: 60px;
+  cursor: pointer;
+}
+
+.cancel-button:hover {
+  background-color: #FF7008;
+  color: #fff;
+}
+
+/*----------------------------------------------------------------
+
+Style cho đổi mật khẩu
+
+----------------------------------------------------------------*/
+/* Định dạng phần main-content */
+.main-content-ChangePassword {
+  padding: 20px;
+  margin-left: 50px;
+  border: 1px solid #bfbdbd;
+  width: 100%;
+  max-width: 1000px;
+}
+
+.main-content-ChangePassword h2 {
+  font-size: 20px;
+  color: #ff6600;
+  margin-bottom: 50px;
+}
+
+.profile-form-ChangePassword {
+  width: 100%;
+}
+
+.form-group {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  flex: 1;
+  color: #666;
+}
+
+.form-group input {
+  flex: 2;
+  padding: 10px;
+  border: 1px solid #e0e0e0;
+  border-radius: 5px;
+}
+
+/* Styles for Main Content */
+.main-content-favorites {
+  flex: 1;
+  /* Allow the main content to take up the remaining space */
+  padding: 20px;
+  /* Add padding for spacing */
+  background-color: #f9f9f9;
+  /* Light background color */
+  border-radius: 8px;
+  /* Rounded corners */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  /* Subtle shadow for depth */
+}
+
+.main-content-favorites h2 {
+  font-size: 20px;
+  color: #ff6600;
+  margin-bottom: 0px;
+}
+
+
+/* Styles for Restaurant Cards */
+.restaurant-cards {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-top: 20px;
+}
+
+.restaurant-card {
+  width: 300px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+}
+
+.restaurant-image {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+}
+
+.restaurant-info {
+  padding: 15px;
+}
+
+.restaurant-name {
+  color: #ff6600;
+  font-size: 18px;
+  font-weight: bold;
+  margin: 0;
+}
+
+.restaurant-description {
+  color: #666;
+  font-size: 14px;
+  margin: 10px 0;
+}
+
+.restaurant-address,
+.restaurant-phone {
+  font-size: 14px;
+  color: #333;
+  margin: 5px 0;
+}
+
+/*----------------------------------------------------------------
+
+Style cho đề xuất nhà hàng
+
+----------------------------------------------------------------*/
+.main-content-recommendation {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  max-width: 100%;
+  min-width: 300px;
+}
+
+.image-upload {
+  width: 20%;
+  margin-right: 20px;
+  margin-top: 100px;
+  margin-left: 40px;
+}
+
+.form-recommendation {
+  width: 80%;
+  margin-bottom: 50px;
+}
+
+.image-upload label {
+  background-color: #b0b0b0;
+  font-weight: bold;
+  padding: 50px;
+  cursor: pointer;
+  margin-top: 50px;
+}
+
+/* Ẩn văn bản mặc định của input file */
+.image-upload input[type="file"] {
+  display: none;
+}
+
+.submit-buttons {
+  background-color: transparent;
+  color: #FF7008;
+  border: 1px solid #FF7008;
+  padding: 10px 20px;
+  border-radius: 60px;
+  cursor: pointer;
+
+}
+
+.submit-buttons:hover {
+  background-color: #FF7008;
+  color: #fff;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  /* Đẩy nút về bên phải */
+}
+
+.form-group {
+  width: 100%;
+  /* Đảm bảo các trường nhập liệu không bị ảnh hưởng */
+  margin-bottom: 15px;
+}
+
+.submit-buttons {
+  background-color: transparent;
+  color: #FF7008;
+  border: 1px solid #FF7008;
+  padding: 10px 20px;
+  border-radius: 60px;
+  cursor: pointer;
+}
+
+/* stylesheets/style.css */
+
+
+nav.menu ul li a {
+  color: inherit;
+  font-weight: normal;
+  transition: color 0.3s;
+}
+
+nav.menu ul li a.active,
+nav.menu ul li a:hover {
+  color: #FF7008;
+  font-weight: bold;
+}

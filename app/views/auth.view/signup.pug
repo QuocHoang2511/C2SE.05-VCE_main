@@ -20,11 +20,22 @@ html
                 label.text-uppercase(for='email') Email
                 input#email.form-control(type='email' placeholder='Email' name='email')
               .form-group
-                label.text-uppercase(for='avatar') Avatar URL
-                input#avatar.form-control(type='text' placeholder='Avatar URL' name='avatar')
+                .image-upload
+                  label(for='file-input' ) 
+                    img#preview(style='width: 40px; height: 40px; border-radius: 50%; margin-right: 10px;' src=`https://icons.iconarchive.com/icons/dtafalonso/android-lollipop/128/Downloads-icon.png` alt='Avatar')
+                  input#file-input.d-none(type='file' name='avatar')
+                  script.
+                    const inputTag = document.getElementById('file-input');
+                    const previewImageTag = document.getElementById('preview');
+                    inputTag.onchange = () => {
+                      const [file] = inputTag.files
+                        if (file) {
+                          previewImageTag.src = URL.createObjectURL(file)
+                        }
+                    }
               .form-group
                 label.text-uppercase(for='address') Address
-                input#address.form-control(type='text' placeholder='Address' name='address')
+                input#address.form-control(type='text' placeholder='Address' name='adress')
               .form-group
                 label.text-uppercase(for='phone') Phone
                 input#phone.form-control(type='text' placeholder='Phone' name='phone')
@@ -35,13 +46,8 @@ html
                 label.text-uppercase(for='confirmPassword') Confirm Password
                 input#confirmPassword.form-control(type='password' placeholder='Confirm Password' name='confirmPassword')
               button.mt-2.btn.btn-signup.float-right(type='submit' value='Signup') Sign Up
-
-            .copy-text
-              | Created with 
-              i.fa.fa-heart
-              |  by Grafreez
           .col-md-8.banner-sec
-            // Carousel section can be included here if needed
+      // Carousel section can be included here if needed
     script(type="text/javascript" src="/javascripts/generated/signup.js")
     script(type="text/javascript" src="/js/vue.min.js")
     script(type="text/javascript" src="/js/jquery.min.js")
