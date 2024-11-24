@@ -12,10 +12,11 @@ export interface RestaurantAttributes {
   category?: string;
   main_dishes?: string;
   city_id?: number;
-  description?: number;
+  description?: string;
   approved?: boolean;
   admin_id?: number;
   user_id?: number;
+  img_restaurant?: string;
 }
 
 export interface RestaurantInstance {
@@ -29,10 +30,11 @@ export interface RestaurantInstance {
   category: string;
   main_dishes: string;
   city_id: number;
-  description: number;
+  description: string;
   approved: boolean;
   admin_id: number;
   user_id: number;
+  img_restaurant: string;
 }
 
 export const Restaurant = sequelize.define("Restaurant", {
@@ -42,10 +44,11 @@ export const Restaurant = sequelize.define("Restaurant", {
   category: Sequelize.STRING,
   main_dishes: Sequelize.STRING,
   city_id: Sequelize.INTEGER,
-  description: Sequelize.INTEGER,
+  description: Sequelize.TEXT,
   approved: Sequelize.BOOLEAN,
   admin_id: Sequelize.INTEGER,
   user_id: Sequelize.INTEGER,
+  img_restaurant: Sequelize.BLOB,
 });
 
 export const associate = () => {

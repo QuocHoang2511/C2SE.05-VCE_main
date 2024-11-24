@@ -2,7 +2,7 @@ import { RestActions } from "@configs/enum";
 import { AuthController } from "@controllers";
 import { Router } from "express";
 import { Route } from ".";
-import { uploadToFolder } from "../fileUpload";
+import { upload } from "../fileUpload";
 
 export class AuthRoute {
   private static path = Router();
@@ -18,8 +18,8 @@ export class AuthRoute {
     this.path;
     this.path
       .route("/signup")
-      .post(uploadToFolder.single("avatar"), this.authController.createUser)
-      .get(this.authController.new);
+      .get(this.authController.new)
+      .post(upload.single("avatar"), this.authController.createUser);
 
     this.path
       .route("/signin")

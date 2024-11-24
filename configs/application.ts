@@ -24,7 +24,7 @@ class Application {
     // Cài đặt template engine
     this.app.set("views", join(resolve("./app"), "views"));
     this.app.set("view engine", "pug");
-
+    this.app.use(methodOverride("_method"));
     // Cài đặt các công cụ giải mã
     this.app.use(express.json());
     this.app.use(express.urlencoded({ extended: false }));

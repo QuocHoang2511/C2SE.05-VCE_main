@@ -1,0 +1,40 @@
+extends ../profile
+
+block main-content
+  h2 Restaurant List
+  form.profile-form(action='/api/v1/user/favorite' method="GET")
+    .container
+      - if (!restaurant || restaurant.length === 0)
+        p No restaurants found
+      - else
+        .row.justify-content-center
+          each restaurants in restaurant
+            - if (restaurants.restaurant_name && restaurants.address && restaurants.phone_number)
+              .col-md-4.mb-4
+                .card.shadow-sm
+                  img.card-img-top(
+                    src=restaurants.img_restaurant ? `data:image/jpeg;base64,${restaurants.img_restaurant.toString('base64')}` : "/images/img/about/3.jpg"
+                    alt=restaurants.restaurant_name
+                  )
+                  .card-body
+                    h3.card-title= restaurants.restaurant_name
+                    p.card-text= (restaurants.description.length > 50 ? restaurants.description.substring(0, 50) + '...' : restaurants.description)
+                    p.card-text
+                      strong Address:
+                      | #{restaurants.address}
+                    p.card-text
+                      strong Phone:
+                      | #{restaurants.phone_number}
+
+  // Phân trang
+  nav.pagination-nav
+    ul.pagination
+      - if (currentPage > 1)
+        li.page-item
+          a.page-link(href=`?page=${currentPage - 1}`) Previous
+      - for (let i = 1; i <= totalPages; i++)
+        li.page-item(class=(i === currentPage ? 'active' : ''))
+          a.page-link(href=`?page=${i}`) #{i}
+      - if (currentPage < totalPages)
+        li.page-item
+          a.page-link(href=`?page=${currentPage + 1}`) Next

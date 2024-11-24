@@ -27,7 +27,7 @@ module.exports = {
                 type: Sequelize.INTEGER
             },
             description: {
-                type: Sequelize.INTEGER
+                type: Sequelize.TEXT
             },
             approved: {
                 type: Sequelize.BOOLEAN
@@ -37,6 +37,9 @@ module.exports = {
             },
             user_id: {
                 type: Sequelize.INTEGER
+            },
+            img_restaurant: {
+                type: Sequelize.BLOB
             },
             createdAt: {
                 allowNull: false,

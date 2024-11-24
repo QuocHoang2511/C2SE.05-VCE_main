@@ -10,19 +10,18 @@ nav#mainNav.navbar.navbar-expand-lg.navbar-dark.navbar-shrink.fixed-top
         li.nav-item
           a.nav-link(href='/') Trang Chủ
         li.nav-item
-          a.nav-link(href='#services') Khám Phá
+          a.nav-link(href='/api/v1/explore') Khám Phá
         li.nav-item
-          a.nav-link(href='#about') Trải Nghiệm
+          a.nav-link(href='/api/v1/restaurant') Trải Nghiệm
         li.nav-item
-          a.nav-link(href='#team') Liên Hệ
+          a.nav-link(href='/api/v1/contact') Liên Hệ
         - if (!User)
           li.nav-item
             a.nav-link(href='/api/v1/auth/signin') Login
         - else
           li.nav-item.d-flex.align-items-center
-            //- img(style='width: 40px; height: 40px; border-radius: 50%; margin-right: 10px;' src=`data:image/png;base64,${User.avatar.toString('base64')}` alt='Avatar')
-            img(style='width: 40px; height: 40px; border-radius: 50%; margin-right: 10px;' src=`/images/img/team/1.jpg` alt='Avatar')
+            img(style='width: 40px; height: 40px; border-radius: 50%; margin-right: 10px;' src=`data:image/png;base64,${User.avatar.toString('base64')}` alt='Avatar')
             .d-flex.flex-column
               a.nav-link(href='/api/v1/user/profile' style='padding: 0;')= User.username
               form(method='POST' action='/api/v1/auth/logout?_method=DELETE')
-                button.btn.btn-danger.btn-sm(type="submit") Logout
+                button.nav-link(type='submit' style='padding: 0; border: none; background: none;') Đăng Xuất

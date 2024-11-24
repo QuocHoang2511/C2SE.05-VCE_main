@@ -14,7 +14,7 @@ module.exports = {
             region_id: {
                 type: Sequelize.INTEGER
             },
-            region_name: {
+            city_name: {
                 type: Sequelize.STRING
             },
             createdAt: {

@@ -38,7 +38,7 @@ export = {
             },
 
             description: {
-                type: Sequelize.INTEGER
+                type: Sequelize.TEXT
             },
 
             approved: {
@@ -51,6 +51,10 @@ export = {
 
             user_id: {
                 type: Sequelize.INTEGER
+            },
+
+            img_restaurant: {
+                type: Sequelize.BLOB
             },
 
             createdAt: {

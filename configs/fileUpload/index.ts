@@ -25,17 +25,6 @@ export const uploadToFolder = multer({
 
 export const upload = multer({ dest: "uploads" });
 
-// export const convertFileToBase64 = (
-//   file: Express.Multer.File,
-//   isDelete: boolean = true
-// ) => {
-//   const fileReaded = readFileSync(file.path);
-//   const encodeFile = fileReaded.toString("base64");
-
-//   if (isDelete) unlinkSync(file.path);
-
-//   return Buffer.from(encodeFile, "base64");
-// };
 export const convertFileToBase64 = (
   file: Express.Multer.File,
   isDelete: boolean = true
@@ -43,7 +32,7 @@ export const convertFileToBase64 = (
   const fileReaded = readFileSync(file.path);
   const encodeFile = fileReaded.toString("base64");
 
-  if (isDelete) unlinkSync(file.path); // Xóa file sau khi đọc nếu `isDelete` là true
+  if (isDelete) unlinkSync(file.path);
 
-  return encodeFile; // Trả về chuỗi Base64
+  return Buffer.from(encodeFile, "base64");
 };

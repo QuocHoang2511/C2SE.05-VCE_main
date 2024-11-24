@@ -6,7 +6,6 @@ block content
     head
       link(rel="stylesheet" href="/css/bootstrap.min.css")
       link(rel="stylesheet" href="/css/font-awesome/css/font-awesome.min.css")
-      link(rel="stylesheet" href="/stylesheets/style.css")
       link(rel="stylesheet" href="/stylesheets/profile/editprofile.css")
 
     section
@@ -20,7 +19,7 @@ block content
         // Sidebar
         aside.sidebar
           .profile-info
-            img.profile-pic(src="/images/img/team/1.jpg" alt='Avatar')
+            img.profile-pic(src=`data:image/png;base64,${User.avatar.toString('base64')}` alt='Avatar')
             p.name #{User.username}
             p.email #{User.email}
           nav.menu
@@ -31,9 +30,9 @@ block content
               li
                 a(href="/api/v1/user/changepassword") Change Password
               li
-                a(href="/favorites") Favorites
+                a(href="/api/v1/user/favorite") Favorites
               li
-                a(href="/restaurantrecommendation") Restaurant Recommendation
+                a(href="/api/v1/user/registering") Restaurant Recommendation
 
         // Main Content
         section.main-content

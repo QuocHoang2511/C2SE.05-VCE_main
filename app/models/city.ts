@@ -6,7 +6,7 @@ import { Restaurant } from "./restaurant";
 export interface CityAttributes {
   city_id?: number;
   region_id?: number;
-  region_name?: string;
+  city_name?: string;
 }
 
 export interface CityInstance {
@@ -16,13 +16,13 @@ export interface CityInstance {
 
   city_id: number;
   region_id: number;
-  region_name: string;
+  city_name: string;
 }
 
 export const City = sequelize.define("City", {
   city_id: Sequelize.INTEGER,
   region_id: Sequelize.INTEGER,
-  region_name: Sequelize.STRING,
+  city_name: Sequelize.STRING,
 });
 
 export const associate = () => {

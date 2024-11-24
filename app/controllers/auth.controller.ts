@@ -129,10 +129,11 @@ export class AuthController extends ApplicationController {
   }
 
   public async createUser(req: Request, res: Response) {
-    const { confirmPassword, password } = req.body;
-    const file = req.file ? convertFileToBase64(req.file, false) : null;
+    const { username, email, adress, phone, confirmPassword, password } =
+      req.body;
+    const file = req.file ? convertFileToBase64(req.file) : null;
     console.log("File received:", req.body.file); // Kiểm tra file nhận được
-    console.log("File converted:", file); // Kiểm tra file sau khi convert
+    // console.log("File converted:", file); // Kiểm tra file sau khi convert
 
     console.log(req.body); // Kiểm tra dữ liệu từ form
     console.log("password", confirmPassword, password);
@@ -143,13 +144,13 @@ export class AuthController extends ApplicationController {
 
     try {
       const users = (await models.User.create({
-        username: req.body.username,
-        email: req.body.email,
+        username: username,
+        email: email,
         avatar: file,
         role: Role.USER,
-        password: req.body.password,
-        adress: req.body.adress,
-        phone: req.body.phone,
+        password: password,
+        adress: adress,
+        phone: phone,
       })) as UserInstance;
 
       const User = (req.session.user = {
@@ -183,12 +184,6 @@ export class AuthController extends ApplicationController {
     if (user) {
       const User = (req.session.user = {
         id: user.id,
-        username: user.username,
-        avatar: user.avatar,
-        email: user.email,
-        role: user.role,
-        adress: user.adress,
-        phone: user.phone,
       });
 
       console.log(" User=req.session: ", User);
@@ -205,20 +200,18 @@ export class AuthController extends ApplicationController {
   }
 
   public async destroy(req: Request, res: Response) {
-    const userId = req.session.user; // Lấy ID từ session
-    if (!userId) {
-      req.flash("errors", { msg: "User is not found." });
-    } else {
+    if (req.session.user) {
       req.session.destroy((err) => {
         if (err) {
-          return res.status(500).send("Không thể xóa session.");
+          req.flash("errors", { msg: "Không thể xóa session." });
+          return res.status(500).redirect("/api/v1/auth/signin");
         }
-        res.redirect("/api/v1/auth/signin"); // Chuyển hướng về trang login
+        req.flash("success", { msg: "Đăng xuất thành công." });
+        return res.redirect("/api/v1/auth/signin");
       });
-      console.log("userID của section1212: ", userId);
-
-      req.flash("success", { msg: "Login successfully" });
-      res.redirect("/api/v1/auth/signin"); // Chuyển hướng về trang login
+    } else {
+      req.flash("errors", { msg: "User không tồn tại." });
+      res.redirect("/api/v1/auth/signin");
     }
   }
 }

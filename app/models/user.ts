@@ -55,5 +55,4 @@ export const associate = () => {
   // Một user có nhiều feedback
   User.hasMany(Feedback, { foreignKey: "user_id" });
 };
-
 export default { User, associate };

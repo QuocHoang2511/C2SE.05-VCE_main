@@ -2,6 +2,7 @@ import { RestActions } from "@configs/enum";
 import { UserController } from "@controllers";
 import { Router } from "express";
 import { Route } from ".";
+import { upload } from "../fileUpload";
 
 export class UserRoute {
   private static path = Router();
@@ -16,11 +17,18 @@ export class UserRoute {
       .route("/editprofile")
       .get(this.userController.editProfileindex)
       .post(this.userController.editProfile);
+
     this.path
       .route("/changepassword")
       .get(this.userController.changepasswordindex)
       .post(this.userController.changepassword);
 
+    this.path.route("/favorite").get(this.userController.Favoriteindex);
+    this.path
+      .route("/registering")
+      .get(this.userController.registeringindex)
+      .post(upload.single("Restaurant"), this.userController.registering);
+    // .post(upload.single("Restaurant"), this.userController.createUser);
     Route.resource(this.path, this.userController, {
       only: [RestActions.Index],
     });
