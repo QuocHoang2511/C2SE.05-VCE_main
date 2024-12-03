@@ -23,7 +23,12 @@ export class AuthRoute {
 
     this.path
       .route("/signin")
-      .get(this.authController.index, this.authController.create);
+      .get(
+        this.authController.index,
+        this.authController.validateUserLogin,
+        this.authController.validateAdmin,
+        this.authController.create
+      );
     this.path
       .route("/forgotpassword")
       .get(this.authController.forgotPasswordUserIndex) // Hiển thị form quên mật khẩu

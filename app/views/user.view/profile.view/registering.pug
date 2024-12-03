@@ -40,18 +40,21 @@ block main-content
             input#phone_number.form-control(type="text" name="phone_number" placeholder="Phone Number" required)
 
           .form-group
-            label(for="main_dishes") Main Dishes:
-            input#main_dishes.form-control(type="text" name="main_dishes" placeholder="Main Dishes" required)
+            label(for="main_dishes" style="margin-right: 140px;") Main Dishes:
+            select#city_id.form-control(name="main_dishes" required)
+              option(value="" disabled selected) -- Select a Main Dishes--
+              each main_dish in Main_dish
+                option(value=main_dish.name) #{main_dish.name}
 
           .form-group
-            label(style="margin-right: 160px;" for="city_id") City:
+            label(for="city_id" style="margin-right: 140px;") City:
             select#city_id.form-control(name="city_id" required)
               option(value="" disabled selected) -- Select a City --
               each city in City
                 option(value=city.city_id) #{city.city_name}
 
           .form-group
-            label(style="margin-right: 100px;" for="description") Description:
+            label(for="description") Description:
             textarea#description.form-control(
               name="description"
               placeholder="Restaurant Description"
@@ -59,4 +62,24 @@ block main-content
               required
               style="resize: vertical; margin-top: 5px;"
             )
-          button.submit-buttons.btn.btn-primary(type="submit" style="margin-top: 15px;") Submit
+
+          .row
+            .col-lg-6
+              button.submit-buttons.btn.btn-primary(type="submit" style="margin-top: 15px;") Submit
+
+  hr
+  h3 User's Restaurants
+  .container-fluid
+    .row
+      each restaurant in UserRestaurants
+        .col-lg-4.col-md-6.mb-3
+          .card.shadow-sm.border-0.rounded-3
+            img.card-img-top.rounded-top(
+              src=restaurant.img_restaurant ? `data:image/jpeg;base64,${restaurant.img_restaurant.toString('base64')}` : "/images/img/about/3.jpg"
+              alt=restaurant.restaurant_name
+              style="height: 150px; object-fit: cover;"
+            )
+            .card-body.bg-white
+              h5.card-title.text-warning.font-weight-bold #{restaurant.restaurant_name}
+              p.card-text.text-muted #{restaurant.description}
+              a.btn.btn-primary(href=`/api/v1/user/dish_menu/${restaurant.id}`) Add Dishes

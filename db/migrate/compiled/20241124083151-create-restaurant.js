@@ -1,7 +1,7 @@
 "use strict";
 module.exports = {
     up: function (queryInterface, Sequelize) {
-        return queryInterface.createTable('Restaurants', {
+        return queryInterface.createTable("Restaurants", {
             id: {
                 allowNull: false,
                 autoIncrement: true,
@@ -17,11 +17,8 @@ module.exports = {
             phone_number: {
                 type: Sequelize.STRING
             },
-            category: {
-                type: Sequelize.STRING
-            },
             main_dishes: {
-                type: Sequelize.STRING
+                type: Sequelize.INTEGER
             },
             city_id: {
                 type: Sequelize.INTEGER
@@ -32,14 +29,14 @@ module.exports = {
             approved: {
                 type: Sequelize.BOOLEAN
             },
-            admin_id: {
-                type: Sequelize.INTEGER
-            },
             user_id: {
                 type: Sequelize.INTEGER
             },
             img_restaurant: {
                 type: Sequelize.BLOB
+            },
+            favourite: {
+                type: Sequelize.BOOLEAN
             },
             createdAt: {
                 allowNull: false,
@@ -52,6 +49,6 @@ module.exports = {
         });
     },
     down: function (queryInterface, Sequelize) {
-        return queryInterface.dropTable('Restaurants');
+        return queryInterface.dropTable("Restaurants");
     }
 };

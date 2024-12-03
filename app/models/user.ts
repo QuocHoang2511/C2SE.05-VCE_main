@@ -1,6 +1,5 @@
 import sequelize from "@configs/database";
 import { Sequelize } from "sequelize";
-import { FeatureDish } from "./featuredish";
 import { Feedback } from "./feedback";
 import { Profile } from "./profile";
 import { Restaurant } from "./restaurant";
@@ -50,7 +49,6 @@ export const associate = () => {
   User.hasMany(Restaurant, { foreignKey: "user_id" });
 
   // Một user có nhiều featured dishes
-  User.hasMany(FeatureDish, { foreignKey: "user_id" });
 
   // Một user có nhiều feedback
   User.hasMany(Feedback, { foreignKey: "user_id" });

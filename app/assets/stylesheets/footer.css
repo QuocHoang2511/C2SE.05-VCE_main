@@ -1,0 +1,103 @@
+footer.footer {
+  background-color: #1e1e1e;
+  /* Màu nền tối */
+  color: #ffffff;
+  /* Màu chữ trắng */
+  padding: 50px 0;
+  /* Khoảng cách trên và dưới */
+  font-size: 14px;
+}
+
+footer.footer .container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+footer.footer h5 {
+  font-weight: bold;
+  font-size: 16px;
+  margin-bottom: 20px;
+}
+
+footer.footer ul {
+  padding: 0;
+  list-style: none;
+}
+
+footer.footer ul li {
+  margin-bottom: 10px;
+}
+
+footer.footer ul li a {
+  color: #ffffff;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+footer.footer ul li a:hover {
+  color: #f0a500;
+  /* Màu khi hover */
+}
+
+footer.footer .d-flex {
+  display: flex;
+  align-items: center;
+}
+
+footer.footer .d-flex a {
+  color: #ffffff;
+  font-size: 18px;
+  margin-right: 10px;
+  transition: color 0.3s ease;
+}
+
+footer.footer .d-flex a:hover {
+  color: #f0a500;
+  /* Màu khi hover */
+}
+
+footer.footer form {
+  display: flex;
+  margin-top: 20px;
+}
+
+footer.footer form input {
+  flex: 1;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 4px 0 0 4px;
+  font-size: 14px;
+}
+
+footer.footer form button {
+  background-color: #f0a500;
+  color: #ffffff;
+  border: none;
+  padding: 8px 16px;
+  font-size: 14px;
+  border-radius: 0 4px 4px 0;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+footer.footer form button:hover {
+  background-color: #d48800;
+}
+
+footer.footer p {
+  margin: 0;
+  font-size: 13px;
+}
+
+footer.footer .text-right {
+  text-align: right;
+}
+
+footer.footer img {
+  max-height: 50px;
+  margin-right: 10px;
+}
+
+footer.footer span.text-warning {
+  color: #f0a500;
+}

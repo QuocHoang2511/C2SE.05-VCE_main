@@ -1,14 +1,38 @@
-footer.footer.py-4
+footer.footer.bg-dark.text-white.pt-5
   .container
-    .row.align-items-center
-      .col-lg-4.text-lg-start Copyright &copy; Your Website 2023
-      .col-lg-4.my-3.my-lg-0
-        a.btn.btn-dark.btn-social.mx-2(href='#!', aria-label='Twitter')
-          i.fab.fa-twitter
-        a.btn.btn-dark.btn-social.mx-2(href='#!', aria-label='Facebook')
+    // Logo và tên
+    .col-lg-4
+      .d-flex.align-items-center
+        img(src="/images/img/about/3.jpg" alt="Logo" style="height: 50px; margin-right: 10px;")
+        span.h5.font-weight-bold Vietnam Specialty 365
+      p.mt-3 All rights Reserved &copy; Your Company, 2021
+
+    // Dịch vụ
+    .col-lg-4
+      h5.font-weight-bold Dịch Vụ
+      ul.list-unstyled.mt-3
+        li: a.text-white.text-decoration-none(href="#") Trang chủ
+        li: a.text-white.text-decoration-none(href="#") Giới thiệu
+        li: a.text-white.text-decoration-none(href="#") Cửa hàng
+        li: a.text-white.text-decoration-none(href="#") Blog
+
+    // Follow Us
+    .col-lg-4
+      h5.font-weight-bold Follow Us
+      .d-flex.mt-3
+        a.text-white.mr-3(href="#") 
+          i.fab.fa-instagram
+        a.text-white.mr-3(href="#") 
           i.fab.fa-facebook-f
-        a.btn.btn-dark.btn-social.mx-2(href='#!', aria-label='LinkedIn')
-          i.fab.fa-linkedin-in
-      .col-lg-4.text-lg-end
-        a.link-dark.text-decoration-none.me-3(href='#!') Privacy Policy
-        a.link-dark.text-decoration-none(href='#!') Terms of Use
+        a.text-white(href="#") 
+          i.fab.fa-twitter
+      p.mt-3 Receive exclusive offers in your mailbox
+      form.d-flex
+        input.form-control.mr-2(type="email" placeholder="Enter Your email")
+        button.btn.btn-warning Subscribe
+
+    // Credit
+    .row
+      p.mb-0 Made with 
+        span.text-warning ❤ 
+        | by Themewagon

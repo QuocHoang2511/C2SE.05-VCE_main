@@ -1,0 +1,104 @@
+extends ../layout
+
+block content
+  html
+    head
+      link(rel="stylesheet" href="/stylesheets/feedback/feedback.css")
+
+    header.masthead
+      .container
+        .masthead-subheading Welcome to the Restaurant
+      script(type="text/javascript" src="/javascripts/navBar.js")  
+
+    // Danh sách món ăn
+    section#services.page-section
+      .menu-wrapper
+        // Header
+        .row
+          .menu-header
+            h1 Our Menu
+            p We consider all the drivers of change give you the components you need to change to create a truly happens.
+
+        // Menu Items
+      .menu-wrapper
+        .menu-items
+          each Dishes in dishes
+            .menu-item
+              .card.shadow-sm.border-0.rounded-3
+                img.card-img-top.rounded-top(
+                  src=Dishes.imgt ? `data:image/jpeg;base64,${Dishes.img.toString('base64')}` : "/images/img/about/3.jpg"
+                  alt=Dishes.dishes_name
+                  style="height: 200px; object-fit: cover;"
+                )
+                .card-body.bg-white
+                  h4.card-title.text-warning.font-weight-bold #{Dishes.name}
+                  p.card-text.text-muted Price: #{Dishes.price}
+                  p.card-text.text-muted(style="margin-bottom: 10px; font-size: 0.9rem; line-height: 1.5;")
+                    | #{Dishes.description.length > 100 ? Dishes.description.substring(0, 100) + '...' : Dishes.description}
+      // Phần feedback
+      .menu-wrapper
+        .row
+          .menu-header
+            h2 Feedbacks
+      .comment-section
+        - if (feedback.length > 0)
+          each feedbacks in feedback
+            .comment-wrp
+              .row
+                .col-md-4 
+                  .c-user
+                    .row.comment
+                      .col-md-4
+                        - if (feedbacks.User && feedbacks.User.avatar)
+                          img.usr-img(
+                            style='width: 50px; height: 50px; border-radius: 50%; '
+                            src=feedbacks.User.avatar ? `data:image/jpeg;base64,${feedbacks.User.avatar.toString('base64')}` : "/images/img/about/3.jpg"
+                            alt="Avatar of #{feedbacks.User.username}"
+                          )
+                        - else
+                          img.usr-img(
+                            style='width: 50px; height: 50px; border-radius: 50%; '
+                            src="/images/img/about/3.jpg"
+                            alt="No avatar"
+                          )
+                      .col-md-8
+                        p.cmnt-at #{new Date(feedbacks.createdAt).toLocaleString("vi-VN")}
+                .col-md-6
+                  p.c-text #{feedbacks.content}
+
+        - else
+          p No feedbacks available for this restaurant.
+
+        .reply-input.container
+          .row
+            form.feedback-form(action=`/api/v1/feedback/${restaurant_id}` method="POST")
+              .d-flex.align-items-center
+                - if (!User)
+                  img.usr-img(
+                    src="/images/img/about/3.jpg"
+                    alt="No avatar"
+                    style='width: 50px; height: 50px; border-radius: 50%; margin-right: 15px;'
+                  )
+                - else
+                  img.usr-img(
+                    src=User.avatar ? `data:image/jpeg;base64,${User.avatar.toString('base64')}` : "/images/img/about/3.jpg"
+                    alt="User Avatar"
+                    style='width: 50px; height: 50px; border-radius: 50%; margin-right: 15px;'
+                  )
+                .flex-grow-1
+                  textarea.cmnt-input.form-control(
+                    name="content"
+                    placeholder="Write your feedback here..."
+                    rows="2"
+                    required
+                  )
+                input.rating-input.form-control(
+                  type="number"
+                  name="rating"
+                  placeholder="Rating (1-5)"
+                  min="1"
+                  max="5"
+                  required
+                  style="width: 120px; margin-left: 10px;"
+                )
+              button.bu-primary.btn.btn-primary.mt-3(type="submit" style="width: 100%;") Send Feedback

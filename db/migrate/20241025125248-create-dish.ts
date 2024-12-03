@@ -1,55 +1,58 @@
-import {
-    QueryInterface,
-    SequelizeStatic
-} from 'sequelize';
+import { QueryInterface, SequelizeStatic } from "sequelize";
 
 export = {
-    up: (queryInterface: QueryInterface, Sequelize: SequelizeStatic) => {
-        return queryInterface.createTable('Dishes', {
-            id: {
-                allowNull: false,
-                autoIncrement: true,
-                primaryKey: true,
-                type: Sequelize.INTEGER
-            },
+  up: (queryInterface: QueryInterface, Sequelize: SequelizeStatic) => {
+    return queryInterface.createTable("Dishes", {
+      id: {
+        allowNull: false,
+        autoIncrement: true,
+        primaryKey: true,
+        type: Sequelize.INTEGER,
+      },
 
-            name: {
-                type: Sequelize.STRING
-            },
+      name: {
+        type: Sequelize.STRING,
+      },
 
-            restaurant_id: {
-                type: Sequelize.INTEGER
-            },
+      restaurant_id: {
+        type: Sequelize.INTEGER,
+      },
 
-            description: {
-                type: Sequelize.STRING
-            },
+      description: {
+        type: Sequelize.STRING,
+      },
 
-            price: {
-                type: Sequelize.FLOAT
-            },
+      price: {
+        type: Sequelize.FLOAT,
+      },
 
-            img: {
-                type: Sequelize.STRING
-            },
+      img: {
+        type: Sequelize.STRING,
+      },
+      city_id: {
+        type: Sequelize.INTEGER,
+      },
 
-            approved: {
-                type: Sequelize.BOOLEAN
-            },
+      user_id: {
+        type: Sequelize.INTEGER,
+      },
+      main_dish: {
+        type: Sequelize.BOOLEAN,
+      },
 
-            createdAt: {
-                allowNull: false,
-                type: Sequelize.DATE
-            },
+      createdAt: {
+        allowNull: false,
+        type: Sequelize.DATE,
+      },
 
-            updatedAt: {
-                allowNull: false,
-                type: Sequelize.DATE
-            }
-        });
-    },
+      updatedAt: {
+        allowNull: false,
+        type: Sequelize.DATE,
+      },
+    });
+  },
 
-    down: (queryInterface: QueryInterface, Sequelize: SequelizeStatic) => {
-        return queryInterface.dropTable('Dishes');
-    }
+  down: (queryInterface: QueryInterface, Sequelize: SequelizeStatic) => {
+    return queryInterface.dropTable("Dishes");
+  },
 };

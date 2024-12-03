@@ -8,7 +8,8 @@ export class RestaurantRoute {
   private static restaurantController = new RestaurantController();
 
   public static draw() {
-    this.path.route("/").get(this.restaurantController.index);
+    this.path.route("/:main_dish").get(this.restaurantController.index);
+    // Đường dẫn vẫn giữ nguyên vì đây là tham số trong URL, không liên quan đến tên cột trong database.
     Route.resource(this.path, this.restaurantController, {
       only: [RestActions.Index],
     });

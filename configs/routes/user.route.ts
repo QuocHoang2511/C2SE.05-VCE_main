@@ -28,6 +28,12 @@ export class UserRoute {
       .route("/registering")
       .get(this.userController.registeringindex)
       .post(upload.single("Restaurant"), this.userController.registering);
+    // Định nghĩa route chính xác cho dish_menu
+    this.path
+      .route("/dish_menu/:restaurant_id")
+      .get(this.userController.dish_menuindex)
+      .post(upload.single("Dish"), this.userController.dish_menu);
+
     // .post(upload.single("Restaurant"), this.userController.createUser);
     Route.resource(this.path, this.userController, {
       only: [RestActions.Index],

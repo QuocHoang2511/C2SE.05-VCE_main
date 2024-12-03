@@ -147,7 +147,7 @@ export class AuthController extends ApplicationController {
         username: username,
         email: email,
         avatar: file,
-        role: Role.USER,
+        role: Role.ADMIN,
         password: password,
         adress: adress,
         phone: phone,
@@ -157,6 +157,7 @@ export class AuthController extends ApplicationController {
         id: users.id,
         username: users.username,
         avatar: users.avatar,
+        role: users.role,
       });
 
       req.flash("success", { msg: `Created user ${users.username}` });
@@ -203,15 +204,12 @@ export class AuthController extends ApplicationController {
     if (req.session.user) {
       req.session.destroy((err) => {
         if (err) {
-          req.flash("errors", { msg: "Không thể xóa session." });
-          return res.status(500).redirect("/api/v1/auth/signin");
+          return res.status(500).redirect("/");
         }
-        req.flash("success", { msg: "Đăng xuất thành công." });
-        return res.redirect("/api/v1/auth/signin");
+        return res.redirect("/");
       });
     } else {
-      req.flash("errors", { msg: "User không tồn tại." });
-      res.redirect("/api/v1/auth/signin");
+      res.redirect("/");
     }
   }
 }

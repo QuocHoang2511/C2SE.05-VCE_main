@@ -2,4 +2,131 @@ extends ../layout
 
 block content
   header.masthead
-    h1 Welcome to the Explore
+    .container
+      .masthead-subheading Welcome to the Restaurant
+    script(type="text/javascript" src="/javascripts/navBar.js")  
+  // Danh sách món ăn và bộ lọc thành phố
+  form(method="GET" action="/api/v1/explore")
+    .form-group
+      section.form-group.pb-0.pt-4
+        .col-md-5
+        .col-md-2
+          label(style="margin-right: 160px;" for="city_id") City:
+        .col-md-2(style="margin-right: 20px;")
+          select#city_id.form-control(name="city_id" required)
+            option(value="" disabled selected) -- Select a City --
+            each city in City
+              option(value=city.city_id) #{city.city_name}
+        .col-md-2
+          button.btn.btn-primary(type="submit") Lọc
+
+  // Danh sách món ăn
+  #dishes
+    .container
+      .col-md-6(style="margin-right: 200px;")
+        #map(style="border: 1px solid #ddd; border-radius: 8px; height: 400px;")
+      .col-md-4
+        .row.ml-4
+          - if (!dishes || dishes.length === 0)
+            .text-center.mt-5
+              img(src="/images/img/about/3.jpg" alt="No Data" style="max-width: 200px;")
+              p.mt-3.text-muted No dishes found. Check back later!
+          - else
+            each dish in dishes
+              .col-md-12.mb-4
+                .card.shadow-sm.border-0(style="transition: transform 0.3s ease, box-shadow 0.3s ease;")
+                  img.card-img-top(
+                    src=dish.img ? `data:image/jpeg;base64,${dish.img.toString('base64')}` : "/images/img/about/3.jpg"
+                    alt=dish.name
+                  )
+                  .card-body.text-center
+                    h5.card-title.text-truncate(style="font-size: 1.25rem; font-weight: bold;")= dish.name
+                    p.card-text.text-muted.small.mb-2
+                      | #{dish.description && dish.description.length > 70 ? dish.description.substring(0, 70) + '...' : dish.description || "No description available."}
+                    p.card-text.text-muted.small.mb-2 City #{dish.city_id}
+                    // if (dish.restaurant && dish.restaurant.restaurant_name && dish.restaurant.address && dish.restaurant.phone_number)
+                    a.btn.btn-outline-primary.btn-sm.text-uppercase.mt-2(href=`/api/v1/restaurant/${dish.id}` ,style="color: #007bff; transition: background-color 0.3s, color 0.3s;") View Restaurant
+
+  // Pagination
+  nav.pagination-nav
+    ul.pagination.justify-content-center
+      - const visiblePages = 5; // Số trang tối đa hiển thị xung quanh trang hiện tại
+      - const startPage = Math.max(1, currentPage - Math.floor(visiblePages / 2));
+      - const endPage = Math.min(totalPages, startPage + visiblePages - 1);
+
+      // Previous button
+      - if (currentPage > 1)
+        li.page-item
+          a.page-link(href=`?page=${currentPage - 1}` style="color: #007bff;") Previous
+
+      // Page numbers
+      - for (let i = startPage; i <= endPage; i++)
+        li.page-item(class=(i === currentPage ? 'active' : ''))
+          a.page-link(href=`?page=${i}` style=(i === currentPage ? "background-color: #007bff; border-color: #007bff; color: #fff;" : "color: #007bff;")) #{i}
+
+      // "..." indicator if needed
+      - if (endPage < totalPages)
+        li.page-item.disabled
+          span.page-link ... 
+        li.page-item
+          a.page-link(href=`?page=${totalPages}` style="color: #007bff;") #{totalPages}
+
+      // Next button
+      - if (currentPage < totalPages)
+        li.page-item
+          a.page-link(href=`?page=${currentPage + 1}` style="color: #007bff;") Next
+
+  style.
+    #map {
+      background-image: url('/images/img/about/3.jpg'); /* Placeholder nếu không có dữ liệu bản đồ */
+      background-size: cover;
+      background-position: center;
+    }
+    .card {
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease-in-out;
+    }
+    .card:hover {
+      transform: scale(1.02);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    }
+    .btn-primary {
+      background-color: #ff6600;
+      border-color: #ff6600;
+    }
+    .btn-primary:hover {
+      background-color: #e65500;
+      border-color: #e65500;
+    }
+    .masthead-subheading {
+      text-transform: uppercase;
+    }
+    .pagination {
+      display: flex;
+      justify-content: center;
+      margin-top: 20px;
+    }
+
+    .pagination a {
+      padding: 8px 12px;
+      margin: 0 2px;
+      background-color: #f0f0f0;
+      border-radius: 4px;
+      text-decoration: none;
+      font-size: 14px;
+    }
+
+    .pagination a:hover {
+      background-color: #e0e0e0;
+    }
+
+    .pagination .active .page-link {
+      background-color: #ff6600;
+      border-color: #ff6600;
+      color: white;
+    }
+
+    .pagination .page-item.disabled .page-link {
+      color: #ccc;
+      cursor: not-allowed;
+    }

@@ -1,0 +1,90 @@
+extends ../profile
+
+block main-content
+  h2 Dishes Restaurants
+
+  // Form thêm món ăn
+  form.profile-form(action=`/api/v1/user/dish_menu/${restaurant_id}` method="POST" enctype="multipart/form-data")
+    .container-fluid
+      .row
+        each Dishes in dish
+          .col-lg-4.col-md-6.mb-3
+            .card.shadow-sm.border-0.rounded-3
+              img.card-img-top.rounded-top(
+                src=Dishes.imgt ? `data:image/jpeg;base64,${Dishes.img.toString('base64')}` : "/images/img/about/3.jpg"
+                alt=Dishes.dishes_name
+                style="height: 200px; object-fit: cover;"
+              )
+              .card-body.bg-white
+                h4.card-title.text-warning.font-weight-bold #{Dishes.name}
+                p.card-text.text-muted Price: #{Dishes.price}
+                p.card-text.text-muted(style="margin-bottom: 10px; font-size: 0.9rem; line-height: 1.5;")
+                  | #{Dishes.description.length > 100 ? Dishes.description.substring(0, 100) + '...' : Dishes.description}
+                //- .d-flex.justify-content-between.text-secondary.mt-3
+                //-   span
+                //-     i.fa.fa-comment-alt.mr-2
+                //-     | 5 bình luận
+                //-   span
+                //-     i.fa.fa-eye.mr-2
+                //-     | 0 lượt xem
+                //-   span
+                //-     i.fa.fa-map-marker-alt.mr-2
+                //-     | Huế
+                //- .text-center.mt-3
+                //-   a.btn.btn-warning.text-white.font-weight-bold(href=`/dish/${Dishes.id}`) VIEW NOW
+
+        .container-fluid
+          .row
+            .col-lg-4
+              .imageupload(style="display: flex; justify-content: center; align-items: center; background-color: #f0f0f0; width: 100%; height: 200px; border: 2px dashed #ccc; cursor: pointer; position: relative; overflow: hidden;")
+                img#preview.img-fluid(
+                  style="max-width: 100%; max-height: 100%; object-fit: cover; display: none;"
+                  alt="Preview"
+                )
+                label(for="file-input" style="color: #007bff; font-weight: bold; position: absolute;") + Upload Image
+                input#file-input.d-none(type="file" name="Dish")
+
+                script.
+                  const inputTag = document.getElementById('file-input');
+                  const previewImageTag = document.getElementById('preview');
+                  inputTag.onchange = () => {
+                    const [file] = inputTag.files;
+                    if (file) {
+                      previewImageTag.src = URL.createObjectURL(file);
+                      previewImageTag.style.display = 'block';
+                      document.querySelector('label[for="file-input"]').style.display = 'none';
+                    }
+                  }
+
+            .col-lg-8
+              .form-group
+                label(for="dishes_name") Dish Name:
+                input#dishes_name.form-control(type="text" name="dishes_name" placeholder="Dish Name" required)
+
+              .form-group
+                label(style="margin-right: 160px;" for="city_id") City:
+                select#city_id.form-control(name="city_id" required)
+                  option(value="" disabled selected) -- Select a City --
+                  each city in City
+                    option(value=city.city_id) #{city.city_name}
+
+              .form-group
+                label(for="price") Price:
+                input#price.form-control(type="text" name="price" placeholder="Price" required)
+
+              .form-group
+                label(style="margin-right: 100px;" for="description") Description:
+                textarea#description.form-control(
+                  name="description"
+                  placeholder="Restaurant Description"
+                  rows="4"
+                  required
+                  style="resize: vertical; margin-top: 5px;"
+                )
+              .row
+                .col-lg-6
+                  button.submit-buttons.btn.btn-primary(type="submit" style="margin-top: 15px;") Add Dish
+                .col-lg-6
+                  button.submit-buttons.btn.btn-primary(type="submit" style="margin-top: 15px;")
+                    a(href="/api/v1/user/registering") Back Restaurant Recommendation
+

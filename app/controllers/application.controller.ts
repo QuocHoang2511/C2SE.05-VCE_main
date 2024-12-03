@@ -1,6 +1,6 @@
 import models from "@models";
 import { NextFunction, Request, Response } from "express";
-import { Role } from "../models/user";
+import { Role, UserInstance } from "../models/user";
 
 export class ApplicationController {
   public async validateUserLogin(
@@ -9,18 +9,22 @@ export class ApplicationController {
     next: NextFunction
   ) {
     // TODO: Delete this line
-    req.session.userId = 1;
-    if (!req.session.userId) {
+    const User = req.session.user;
+    if (!User) {
       req.flash("errors", { msg: "You have to login first." });
-      return res.redirect("/");
+      return res.redirect("/api/v1/auth/signin");
     }
 
-    const user = await models.User.findById(req.session.userId);
+    const user = (await models.User.findOne({
+      where: {
+        id: User.id,
+      },
+    })) as UserInstance;
     if (!user) {
       req.flash("errors", {
-        msg: `User with id: ${req.session.userId} does not found.`,
+        msg: `User with id: ${User.id} does not found.`,
       });
-      return res.redirect("/");
+      return res.redirect("/api/v1/auth/signin");
     }
 
     req.user = user;
@@ -37,7 +41,7 @@ export class ApplicationController {
         msg: `You are not an admin`,
       });
 
-      return res.redirect("/");
+      return res.redirect("/api/v1/auth/signin");
     }
   }
 }

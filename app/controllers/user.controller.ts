@@ -27,7 +27,9 @@ export class UserController extends ApplicationController {
       }
 
       // Render trang home với thông tin người dùng
-      res.render("user.view/profile", { User: user });
+      res.render("user.view/profile.view/editprofile", {
+        User: user,
+      });
     } catch (error) {
       req.flash("errors", { msg: "Error fetching user:" });
     }
@@ -208,7 +210,7 @@ export class UserController extends ApplicationController {
       // Truy vấn danh sách nhà hàng với phân trang
       const { count, rows: restaurants } =
         await models.Restaurant.findAndCountAll({
-          where: { user_id: User.id },
+          where: { user_id: User.id, favourite: 1 },
           limit: limit,
           offset: offset,
         });
@@ -231,7 +233,6 @@ export class UserController extends ApplicationController {
   }
 
   public async registeringindex(req: Request, res: Response) {
-    // Kiểm tra nếu session không tồn tại hoặc không có user
     if (!req.session || !req.session.user) {
       console.log("User session not found");
       return res.redirect("/"); // Chuyển hướng tới trang đăng nhập nếu không có user trong session
@@ -240,7 +241,6 @@ export class UserController extends ApplicationController {
     const User = req.session.user;
 
     try {
-      // Truy vấn thông tin người dùng từ database để đảm bảo user tồn tại
       const user = await models.User.findOne({
         where: { id: User.id },
       });
@@ -251,16 +251,28 @@ export class UserController extends ApplicationController {
         return res.redirect("/login"); // Chuyển hướng nếu không tìm thấy người dùng
       }
 
-      // Render trang đổi mật khẩu với thông tin người dùng
+      // Lấy danh sách nhà hàng của user
+      const userRestaurants = await models.Restaurant.findAll({
+        where: { user_id: User.id, approved: 1 },
+      });
+      const main_dish = await models.Dish.findAll({
+        where: { main_dish: 1 },
+      });
+      console.log("main_dish", main_dish);
+
+      // Render trang
       res.render("user.view/profile.view/registering", {
         User: user,
         City: city,
+        UserRestaurants: userRestaurants,
+        Main_dish: main_dish,
       });
     } catch (error) {
       console.error("Error rendering registering page:", error);
-      req.flash("errors", { msg: "Error fetching user:" });
+      req.flash("errors", { msg: "Error fetching user data." });
     }
   }
+
   public async registering(req: Request, res: Response) {
     const {
       restaurant_name,
@@ -280,25 +292,41 @@ export class UserController extends ApplicationController {
     const User = req.session.user;
 
     try {
+      // if (type === "dish") {
+      //   return res.redirect(`/api/v1/user/dish_menu/${restaurant_id}`); // Chuyển hướng đến trang đăng nhập (nếu cần)
+      // }
       // Xử lý file upload (nếu có)
       const file = req.file ? convertFileToBase64(req.file) : null;
-      console.log("File received:", req.file); // Kiểm tra file nhận được
+      console.log("User role:", User.role); // Kiểm tra file nhận được
 
       // Tạo mới nhà hàng
-      const restaurant = await models.Restaurant.create({
-        restaurant_name,
-        address,
-        phone_number,
-        main_dishes,
-        city_id,
-        img_restaurant: file, // Lưu file dưới dạng Base64
-        admin_id: null, // Mặc định admin_id là null
-        description,
-        approved: 1, // Mặc định là được duyệt
-        category: "Vietnamese", // Giả định loại hình nhà hàng
-        user_id: User.id, // Liên kết nhà hàng với người dùng
-      });
-
+      if (User.role == 1) {
+        await models.Restaurant.create({
+          restaurant_name,
+          address,
+          phone_number,
+          main_dishes,
+          city_id,
+          img_restaurant: file, // Lưu file dưới dạng Base64
+          description,
+          approved: 0, // Mặc định là được duyệt
+          user_id: User.id, // Liên kết nhà hàng với người dùng
+          favourite: 1,
+        });
+      } else {
+        await models.Restaurant.create({
+          restaurant_name,
+          address,
+          phone_number,
+          main_dishes,
+          city_id,
+          img_restaurant: file, // Lưu file dưới dạng Base64
+          description,
+          approved: 1, // Mặc định là được duyệt
+          user_id: User.id, // Liên kết nhà hàng với người dùng
+          favourite: 1,
+        });
+      }
       // Hiển thị thông báo thành công
       req.flash("success", { msg: `Created restaurant successfully!` });
       return res.redirect("/api/v1/user/registering"); // Chuyển hướng đến trang đăng nhập (nếu cần)
@@ -308,6 +336,90 @@ export class UserController extends ApplicationController {
         msg: "An error occurred while creating the restaurant.",
       });
       return res.redirect("/"); // Chuyển hướng về trang chính
+    }
+  }
+
+  public async dish_menuindex(req: Request, res: Response) {
+    // Kiểm tra nếu session không tồn tại hoặc không có user
+    if (!req.session || !req.session.user) {
+      console.log("User session not found");
+      return res.redirect("/"); // Chuyển hướng tới trang đăng nhập nếu không có user trong session
+    }
+
+    const User = req.session.user;
+    const { restaurant_id } = req.params; // Lấy restaurant_id từ params
+    console.log("Restaurant ID from params 1:", restaurant_id); // Kiểm tra giá trị restaurant_id
+    try {
+      // Truy vấn thông tin người dùng từ database để đảm bảo user tồn tại
+      const user = await models.User.findOne({
+        where: { id: User.id },
+      });
+      const city = await models.City.findAll();
+      // Lấy danh sách món ăn cho nhà hàng
+      const dishes = await models.Dish.findAll({
+        where: { restaurant_id },
+      });
+      if (!user) {
+        console.log("User not found in database");
+        return res.redirect("/login"); // Chuyển hướng nếu không tìm thấy người dùng
+      }
+
+      // Render trang đổi mật khẩu với thông tin người dùng
+      res.render("user.view/profile.view/dish_menu", {
+        User: user,
+        dish: dishes,
+        restaurant_id: restaurant_id,
+        City: city,
+      });
+    } catch (error) {
+      console.error("Error rendering dish_menu page:", error);
+      req.flash("errors", { msg: "Error fetching user:" });
+    }
+  }
+  public async dish_menu(req: Request, res: Response) {
+    const { dishes_name, city_id, price, description } = req.body;
+    const { restaurant_id } = req.params; // Lấy restaurant_id từ params
+    console.log("Restaurant ID from params:", restaurant_id); // Kiểm tra giá trị restaurant_id
+    if (!req.session || !req.session.user) {
+      console.log("User session not found");
+      return res.redirect("/"); // Chuyển hướng về trang chính nếu không có session
+    }
+
+    const User = req.session.user;
+
+    try {
+      console.log("Received dish data:", {
+        dishes_name,
+        city_id,
+        price,
+        description,
+        restaurant_id,
+      });
+
+      const file = req.file ? convertFileToBase64(req.file) : null;
+      console.log("File received:", req.file);
+
+      // Tạo mới món ăn
+      await models.Dish.create({
+        name: dishes_name,
+        price,
+        img: file, // Lưu file dưới dạng Base64
+        description,
+        city_id,
+        main_dish: 0,
+        user_id: User.id,
+        restaurant_id,
+      });
+
+      // Thông báo thành công
+      req.flash("success", { msg: `Created dish successfully!` });
+      return res.redirect(`/api/v1/user/dish_menu/${restaurant_id}`);
+    } catch (error) {
+      console.error("Error creating dish:", error);
+      req.flash("errors", {
+        msg: "An error occurred while creating the dish.",
+      });
+      return res.redirect(`/api/v1/user/dish_menu/${restaurant_id}`);
     }
   }
 }

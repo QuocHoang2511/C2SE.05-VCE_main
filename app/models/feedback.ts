@@ -6,7 +6,6 @@ import { User } from "./user";
 export interface FeedbackAttributes {
   user_id?: number;
   restaurant_id?: number;
-  dish_id?: number;
   content?: string;
   rating?: number;
 }
@@ -18,7 +17,6 @@ export interface FeedbackInstance {
 
   user_id: number;
   restaurant_id: number;
-  dish_id: number;
   content: string;
   rating: number;
 }
@@ -26,17 +24,14 @@ export interface FeedbackInstance {
 export const Feedback = sequelize.define("Feedback", {
   user_id: Sequelize.INTEGER,
   restaurant_id: Sequelize.INTEGER,
-  dish_id: Sequelize.INTEGER,
   content: Sequelize.STRING,
   rating: Sequelize.INTEGER,
 });
 
 export const associate = () => {
-  // Một feedback thuộc về một user
   Feedback.belongsTo(User, { foreignKey: "user_id" });
-
-  // Một feedback thuộc về một restaurant
   Feedback.belongsTo(Restaurant, { foreignKey: "restaurant_id" });
+  User.hasMany(Feedback, { foreignKey: "user_id" });
 };
 
 export default { Feedback, associate };

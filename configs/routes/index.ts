@@ -6,6 +6,7 @@ import { AuthRoute } from "./auth.route";
 import { ContactRoute } from "./contact.route";
 import { DevRoute } from "./dev.route";
 import { ExploreRoute } from "./explore.route";
+import { FeedbackRoute } from "./feedback.route";
 import { RestaurantRoute } from "./restaurant.route";
 import { UserRoute } from "./user.route";
 export class Route {
@@ -20,6 +21,7 @@ export class Route {
     this.path.use("/api/v1/explore", ExploreRoute.draw());
     this.path.use("/api/v1/restaurant", RestaurantRoute.draw());
     this.path.use("/api/v1/contact", ContactRoute.draw());
+    this.path.use("/api/v1/feedback", FeedbackRoute.draw());
 
     Route.resource(this.path, this.homeController, {
       only: [RestActions.Index],

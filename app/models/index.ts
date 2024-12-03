@@ -1,6 +1,5 @@
 import cityModel, { City } from "./city";
 import dishModel, { Dish } from "./dish";
-import featureDishModel, { FeatureDish } from "./featuredish";
 import feedbackModel, { Feedback } from "./feedback";
 import profileModel, { Profile } from "./profile";
 import regionModel, { Region } from "./region";
@@ -11,7 +10,6 @@ import userModel, { User } from "./user";
 userModel.associate();
 cityModel.associate();
 dishModel.associate();
-featureDishModel.associate();
 feedbackModel.associate();
 profileModel.associate();
 regionModel.associate();
@@ -21,7 +19,6 @@ export default {
   User,
   City,
   Dish,
-  FeatureDish,
   Feedback,
   Profile,
   Region,
