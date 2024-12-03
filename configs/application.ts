@@ -5,9 +5,13 @@ import flash from "express-flash";
 import session from "express-session";
 import createError from "http-errors";
 import methodOverride from "method-override";
-import { join, resolve } from "path";
+import path, { join, resolve } from "path";
 import serverless from "serverless-http";
 import { Route } from "./routes";
+const app = express();
+
+// Cấu hình Express phục vụ các tệp tĩnh
+app.use("/controllers", express.static(path.join(__dirname, "controllers")));
 
 type RouteInfo = {
   method: string;

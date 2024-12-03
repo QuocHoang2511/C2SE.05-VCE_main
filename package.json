@@ -5,7 +5,7 @@
   "author": "Peter Pham",
   "license": "MIT",
   "scripts": {
-    "build": "yarn build-client && npx tsc && node dist/index.js",
+    "build": "yarn build-client && npx tsc && node dist/index.js && tsc",
     "serverless": "yarn build-client && npx tsc && npx serverless offline --noPrependStageInUrl",
     "start": "yarn build-client && node dist/index.js",
     "dev": "nodemon -e js,ts,pug,vue index.ts",
