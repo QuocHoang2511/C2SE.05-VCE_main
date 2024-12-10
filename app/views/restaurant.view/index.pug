@@ -1,9 +1,9 @@
 extends ../layout
 
 block content
-  header.masthead
-    .container
-      .masthead-subheading Welcome to the Restaurant
+  header.masthead(style="height: 400px; object-fit: cover;  center/cover no-repeat;")
+    .container.h-100.d-flex.align-items-center.justify-content-center
+      span.text-white.px-3.py-2.fs-1.fw-bold.shadow.bg-dark.bg-opacity-50.rounded Nhà Hàng
     script(type="text/javascript" src="/javascripts/navBar.js")  
   // Danh sách nhà hàng
   section#services.page-section
@@ -97,3 +97,38 @@ block content
       color: #ccc;
       cursor: not-allowed;
     }
+
+
+
+
+
+
+
+
+
+
+
+
+      .comment-section
+        h2 Feedbacks for the restaurant
+        if feedbacks.length
+          each feedback in feedbacks
+            .comment-wrp
+              .comment.container
+                .c-user
+                  img.usr-img(src=feedback.User.avatar alt=feedback.User.username)
+                  p.usr-name= feedback.User.username
+                  p.cmnt-at= feedback.createdAt.toLocaleString("vi-VN")
+                p.c-text= feedback.content
+
+        else
+          p No feedbacks available for this restaurant.
+
+        if User
+          .reply-input.container
+            img.usr-img(src=User.avatar alt=User.username)
+            form(action=`/feedback/${restaurant_id}` method="POST")
+              textarea.cmnt-input(name="content" placeholder="Add a comment..." required)
+              button.bu-primary(type="submit") SEND
+        else
+          p Please log in to add feedback.

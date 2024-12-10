@@ -1,11 +1,15 @@
 extends ../layout
 
 block content
-  header.masthead
-    .container
-      .masthead-subheading Welcome to the Restaurant
+  html
+    head
+      title= "Món Ăn"
+      link(rel="stylesheet" href="/stylesheets/profile/editprofile.css")
+
+  header.masthead(style="height: 400px; object-fit: cover;  center/cover no-repeat;")
+    .container.h-100.d-flex.align-items-center.justify-content-center
+      span.text-white.px-3.py-2.fs-1.fw-bold.shadow.bg-dark.bg-opacity-50.rounded Món Ăn
     script(type="text/javascript" src="/javascripts/navBar.js")  
-  // Danh sách món ăn và bộ lọc thành phố
   form(method="GET" action="/api/v1/explore")
     .form-group
       section.form-group.pb-0.pt-4
@@ -43,7 +47,7 @@ block content
                     h5.card-title.text-truncate(style="font-size: 1.25rem; font-weight: bold;")= dish.name
                     p.card-text.text-muted.small.mb-2
                       | #{dish.description && dish.description.length > 70 ? dish.description.substring(0, 70) + '...' : dish.description || "No description available."}
-                    p.card-text.text-muted.small.mb-2 City #{dish.city_id}
+                    p.card-text.text-muted.small.mb-2  #{dish.city_name}
                     // if (dish.restaurant && dish.restaurant.restaurant_name && dish.restaurant.address && dish.restaurant.phone_number)
                     a.btn.btn-outline-primary.btn-sm.text-uppercase.mt-2(href=`/api/v1/restaurant/${dish.id}` ,style="color: #007bff; transition: background-color 0.3s, color 0.3s;") View Restaurant
 

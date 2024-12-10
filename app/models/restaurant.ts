@@ -56,9 +56,10 @@ export const associate = () => {
   Restaurant.hasMany(Dish, { foreignKey: "restaurant_id" });
 
   // Một restaurant thuộc về một city
-  Restaurant.belongsTo(City, { foreignKey: "city_id" });
-
-  // Một restaurant có nhiều feedback
+  Restaurant.hasOne(City, {
+    foreignKey: "city_id", // Giả sử city_id là khóa ngoại trong bảng Dish
+    as: "city", // Alias quan hệ
+  }); // Một restaurant có nhiều feedback
   Restaurant.hasMany(Feedback, { foreignKey: "restaurant_id" });
 };
 

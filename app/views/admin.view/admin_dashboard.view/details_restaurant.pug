@@ -1,0 +1,68 @@
+extends ../admin_dashboard
+
+block main-content
+  h3.text-secondary.text-center.my-3.mb-5 User's Restaurants
+  .container-fluid
+    .row
+      // Phần thông tin User
+      if User
+        .col-lg-6.col-md-6.mb-3
+          .profile-info.mt-2(style=("  border-right: #72727275 solid 3px;"))
+            img.profile-pic(
+              src=User.avatar ? `data:image/jpeg;base64,${User.avatar.toString('base64')}` : "/images/img/about/3.jpg"
+              alt=User.name
+            )
+            p.name #{User.username}
+            p.email #{User.email}
+      else
+        .col-12
+          .alert.alert-warning.text-center.mt-3
+            | Không có thông tin người dùng.
+
+      if UserRestaurants
+        .col-lg-6.col-md-6.mb-3
+          .card.shadow-sm.border-0.rounded-3
+            img.card-img-top.rounded-top(
+              src=UserRestaurants.img_restaurant ? `data:image/jpeg;base64,${UserRestaurants.img_restaurant.toString('base64')}` : "/images/img/about/3.jpg"
+              alt=UserRestaurants.restaurant_name
+              style="height: 150px; object-fit: cover;"
+            )
+            .card-body.bg-white.text-center
+              h5.card-title.text-warning.font-weight-bold #{UserRestaurants.restaurant_name}
+              p.card-text.text-muted #{UserRestaurants.description}
+      else
+        .col-12
+          .alert.alert-warning.text-center.mt-3
+            | Không có nhà hàng nào được tìm thấy.
+
+    .row.mt-4
+      // Phần món ăn của nhà hàng
+      h3.text-secondary.text-center.mt-3 Menu Restaurant
+      if dish.length > 0
+        each Dishes in dish
+          .col-lg-4.col-md-6.mb-3
+            .card.shadow-sm.border-0.rounded-3
+              img.card-img-top.rounded-top(
+                src=Dishes.img ? `data:image/jpeg;base64,${Dishes.img.toString('base64')}` : "/images/img/about/3.jpg"
+                alt=Dishes.name
+                style="height: 200px; object-fit: cover;"
+              )
+              .card-body.bg-white.text-center
+                h4.card-title.text-warning.font-weight-bold #{Dishes.name}
+                p.card-text.text-muted Price: #{Dishes.price}
+                p.card-text.text-muted(style="margin-bottom: 10px; font-size: 0.9rem; line-height: 1.5;")
+                  | #{Dishes.description.length > 100 ? Dishes.description.substring(0, 100) + '...' : Dishes.description}
+      else
+        .col-12
+          .alert.alert-warning.text-center.mt-3
+            | Không có món ăn nào trong thực đơn.
+  .row.mt-3
+    .col-12.text-center
+      if UserRestaurants && UserRestaurants.approved
+        a.btn.btn-outline-success(href="/api/v1/admin/restaurants") Trở lại
+      else if UserRestaurants && !UserRestaurants.approved
+        form(method="POST" action=`/api/v1/admin/restaurants/detail/${UserRestaurants.id}/${UserRestaurants.user_id}`)
+          button.btn.btn-outline-warning(type="submit") Phê duyệt nhà hàng
+      else
+        .alert.alert-warning.text-center
+          | Không có thông tin nhà hàng.

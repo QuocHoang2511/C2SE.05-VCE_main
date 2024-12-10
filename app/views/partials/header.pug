@@ -1,7 +1,24 @@
 nav#mainNav.navbar.navbar-expand-lg.navbar-dark.navbar-shrink.fixed-top
+  style.
+    .nav-item.dropdown:hover .dropdown-menu {
+      display: block;
+      margin-top: 0;
+    }
+    .dropdown-menu {
+      margin-top: 0.5rem;
+    }
+    .nav-link.dropdown-toggle {
+      color: white;
+    }
+    .dropdown-item {
+      color: black;
+    }
+    .dropdown-item:hover {
+      background-color: #f8f9fa;
+    }
   .container
     a.navbar-brand(href='/')
-      img(src='/images/img/navbar-logo.svg' alt='...')
+      img(style=' height: 66px;' src='/images/img/logo.png' alt='...')
     button.navbar-toggler(type='button' data-bs-toggle='collapse' data-bs-target='#navbarResponsive' aria-controls='navbarResponsive' aria-expanded='false' aria-label='Toggle navigation')
       | Menu
       i.fas.fa-bars.ms-1
@@ -12,16 +29,22 @@ nav#mainNav.navbar.navbar-expand-lg.navbar-dark.navbar-shrink.fixed-top
         li.nav-item
           a.nav-link(href='/api/v1/explore') Khám Phá
         li.nav-item
-          a.nav-link(href='/api/v1/restaurant') Trải Nghiệm
-        li.nav-item
-          a.nav-link(href='/api/v1/feedback') Liên Hệ
+          a.nav-link(href='/api/v1/contact') Liên Hệ
         - if (!User)
           li.nav-item
             a.nav-link(href='/api/v1/auth/signin') Login
         - else
-          li.nav-item.d-flex.align-items-center
-            img(style='width: 40px; height: 40px; border-radius: 50%; margin-right: 10px;' src=`data:image/png;base64,${User.avatar.toString('base64')}` alt='Avatar')
-            .d-flex.flex-column
-              a.nav-link(href='/api/v1/user/profile' style='padding: 0;')= User.username
+          li.nav-item.dropdown
+            a.nav-link.dropdown-toggle(href='#' id='userDropdown' role='button' data-bs-toggle='dropdown' aria-haspopup='true' aria-expanded='false')
+              img.card-img-top(
+                style='width: 40px; height: 40px; border-radius: 50%; margin-right: 10px;'
+                src=User.img_restaurant ? `data:image/jpeg;base64,${User.img_restaurant.toString('base64')}` : "/images/img/about/3.jpg"
+                alt=User.username
+              )
+              = User.username
+            .dropdown-menu(aria-labelledby='userDropdown')
+              a.dropdown-item(href='/api/v1/user/profile') Hồ Sơ
+              - if (User.role === 1)
+                a.dropdown-item(href='/api/v1/admin/dashboard') Quản Lý Hồ Sơ
               form(method='POST' action='/api/v1/auth/logout?_method=DELETE')
-                button.nav-link(type='submit' style='padding: 0; border: none; background: none;') Đăng Xuất
+                button.dropdown-item(type='submit' style='border: none; background: none;') Đăng Xuất

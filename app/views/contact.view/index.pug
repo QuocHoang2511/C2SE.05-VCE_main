@@ -1,5 +1,68 @@
 extends ../layout
 
 block content
-  header.masthead
-    h1 Welcome to the Contact
+  header.masthead(style="height: 400px; object-fit: cover;  center/cover no-repeat;")
+    .container.h-100.d-flex.align-items-center.justify-content-center
+      span.text-white.px-3.py-2.fs-1.fw-bold.shadow.bg-dark.bg-opacity-50.rounded Liên Hệ
+    script(type="text/javascript" src="/javascripts/navBar.js")  
+
+  // Main Content
+  .container.mt-5
+    .row
+      // Form Section
+      .col-md-6.offset
+        form.shadow.p-4.bg-white.rounded.border(action='/api/v1/contact' method="POST")
+          h2.text-primary.text-center.mb-4 Liên Hệ Với Chúng Tôi
+
+          // Name Field
+          .mb-3
+            label.form-label(for="name") Họ và tên
+            input.form-control(type="text" placeholder="Nhập họ và tên của bạn" name="contact_name")
+
+          // Phone Field
+          .mb-3
+            label.form-label(for="phone") Phone
+            input.form-control(type="text" placeholder="Nhập số điện thoại của bạn" name="contact_phone")
+
+          // Email Field
+          .mb-3
+            label.form-label(for="email") Email
+            input.form-control(type="email" placeholder="Nhập email của bạn" name="contact_email")
+
+          // Message Field
+          .mb-4
+            label.form-label(for="message") Lời Nhắn
+            textarea.form-control(placeholder="Nhập lời nhắn" name="contact_message" rows="4")
+
+          // Submit Button
+          .d-grid
+            button.btn.btn-primary(type="submit") Gửi Lời Nhắn
+
+
+      // Contact Information Image
+      .col-md-6.text-center
+        img.img-fluid.rounded(src="https://img.freepik.com/free-vector/hand-drawn-contact-information-background-template_23-2148191423.jpg?w=740&t=st=1698172115~exp=1698172715~hmac=b72333bb63f8444776602a4a18d1a555f763bd0f462dad53c96e7085e1fff488" alt="")
+
+  // Contact Details
+  .container.mt-5
+    .row.text-center
+      // Phone Section
+      .col-md-4
+        div
+          i.bi.bi-telephone-fill.fs-1.text-primary
+          h2.fs-4.fw-bold.mt-2 Số Điện Thoại
+          p.text-primary 0345 666 999
+
+      // Address Section
+      .col-md-4
+        div
+          i.bi.bi-geo-alt-fill.fs-1.text-primary
+          h2.fs-4.fw-bold.mt-2 Địa Chỉ
+          p.text-primary Hải Châu, Đà Nẵng
+
+      // Email Section
+      .col-md-4
+        div
+          i.bi.bi-envelope-fill.fs-1.text-primary
+          h2.fs-4.fw-bold.mt-2 Email
+          p.text-primary example@gmail.com

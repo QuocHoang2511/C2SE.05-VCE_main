@@ -49,15 +49,11 @@ export const associate = () => {
 
   // Một user có thể có nhiều món ăn
   User.hasMany(Dish, { foreignKey: "user_id" });
-  City.belongsToMany(Dish, {
-    through: "CityDishes",
-    foreignKey: "city_id",
-    as: "dishes",
-  });
-  Dish.belongsToMany(City, {
-    through: "CityDishes",
-    foreignKey: "dish_id",
-    as: "cities",
+
+  // Trong model Dish
+  Dish.hasOne(City, {
+    foreignKey: "city_id", // Giả sử city_id là khóa ngoại trong bảng Dish
+    as: "city", // Alias quan hệ
   });
 };
 

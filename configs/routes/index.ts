@@ -2,6 +2,7 @@ import env from "@configs/env";
 import { HomeController } from "@controllers";
 import { Router } from "express";
 import { RestActions } from "../enum";
+import { AdminRoute } from "./admin.route";
 import { AuthRoute } from "./auth.route";
 import { ContactRoute } from "./contact.route";
 import { DevRoute } from "./dev.route";
@@ -22,6 +23,7 @@ export class Route {
     this.path.use("/api/v1/restaurant", RestaurantRoute.draw());
     this.path.use("/api/v1/contact", ContactRoute.draw());
     this.path.use("/api/v1/feedback", FeedbackRoute.draw());
+    this.path.use("/api/v1/admin", AdminRoute.draw());
 
     Route.resource(this.path, this.homeController, {
       only: [RestActions.Index],

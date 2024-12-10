@@ -8,7 +8,7 @@ block content
       link(rel="stylesheet" href="/css/font-awesome/css/font-awesome.min.css")
       link(rel="stylesheet" href="/stylesheets/profile/editprofile.css")
 
-    section
+    section(style="padding-top: 117px;")
       // Header
       header.header
         h1 Profile
@@ -19,7 +19,10 @@ block content
         // Sidebar
         aside.sidebar
           .profile-info
-            img.profile-pic(src=`data:image/png;base64,${User.avatar.toString('base64')}` alt='Avatar')
+            img.profile-pic(
+              src=User.img_restaurant ? `data:image/jpeg;base64,${User.img_restaurant.toString('base64')}` : "/images/img/about/3.jpg"
+              alt=User.name
+            )
             p.name #{User.username}
             p.email #{User.email}
           nav.menu

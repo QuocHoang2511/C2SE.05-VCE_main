@@ -1,5 +1,6 @@
 import sequelize from "@configs/database";
 import { Sequelize } from "sequelize";
+import { Dish } from "./dish";
 import { Region } from "./region";
 import { Restaurant } from "./restaurant";
 
@@ -28,6 +29,8 @@ export const City = sequelize.define("City", {
 export const associate = () => {
   // Một city thuộc về một region
   City.belongsTo(Region, { foreignKey: "region_id" });
+
+  City.hasMany(Dish, { foreignKey: "city_id", as: "dishes" });
 
   // Một city có nhiều restaurants
   City.hasMany(Restaurant, { foreignKey: "city_id" });

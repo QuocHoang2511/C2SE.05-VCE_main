@@ -1,0 +1,36 @@
+extends ../admin_dashboard
+
+block main-content
+  h2 Quản lý Nhà hàng
+  .container-filter
+    .row
+      .col-md-12
+        // Tiêu đề cột
+        .row.fw-bold.border-bottom.py-2
+          .col-1 ID
+          .col-2 Tên Nhà hàng
+          .col-3 Địa chỉ
+          .col-2 Số điện thoại
+          .col-2 Trạng thái
+          .col-1.text-center Hành động
+
+    .row
+      .col-md-12
+        // Danh sách nhà hàng
+        each restaurant in Restaurants
+          .row.align-items-center.border-bottom.py-2
+            .col-1= restaurant.id
+            .col-2= restaurant.restaurant_name
+            .col-3= restaurant.address
+            .col-2= restaurant.phone_number
+            .col-2
+              if restaurant.approved
+                a.btn.btn-outline-success(href=`/api/v1/admin/restaurants/detail/${restaurant.id}/${restaurant.user_id}`) Đã duyệt
+              else
+                a.btn.btn-outline-warning(href=`/api/v1/admin/restaurants/detail/${restaurant.id}/${restaurant.user_id}`) Chưa duyệt
+            .col-1.text-center
+              .d-flex
+
+                // Xóa nhà hàng
+                form(method="POST" action=`/api/v1/admin/restaurants/${restaurant.id}?_method=DELETE`)
+                  button.btn.btn-danger.ml-2(type="submit") Xóa

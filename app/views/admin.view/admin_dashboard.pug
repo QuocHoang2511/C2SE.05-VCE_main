@@ -1,0 +1,38 @@
+extends ../layout
+
+block content
+
+  html
+    head
+      link(rel="stylesheet" href="/css/bootstrap.min.css")
+      link(rel="stylesheet" href="/css/font-awesome/css/font-awesome.min.css")
+      link(rel="stylesheet" href="/stylesheets/profile/editprofile.css")
+
+    section(style="padding-top: 112px;")
+      // Header
+      header.header(style="background-color: #0d88fd;")
+        h1 Admin
+      .container
+        aside.sidebar
+          .profile-info
+            - if (!User)
+              a(href="/api/v1/auth/signin") Login
+            - else
+              img.profile-pic(
+                src=User.img_restaurant ? `data:image/jpeg;base64,${User.img_restaurant.toString('base64')}` : "/images/img/about/3.jpg"
+                alt=User.name
+              )
+              p.name #{User.username}
+              p.email #{User.email}
+          nav.menu
+            ul
+              li
+                a(href="/api/v1/admin/dashboard") Dashboard
+              li
+                a(href="/api/v1/admin/usermanagement") User
+              li
+                a(href="/api/v1/admin/restaurants") Restaurant
+              li
+                a(href="/api/v1/admin/dish_main") Main Dish
+        section.main-content
+          block main-content 

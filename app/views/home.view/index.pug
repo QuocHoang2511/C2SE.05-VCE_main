@@ -1,36 +1,59 @@
 extends ../layout
 
 block content
-  header.masthead
-    .container
-      .masthead-subheading Welcome To Our Studio!
-      .masthead-heading.text-uppercase It&apos;s Nice To Meet You
-      a.btn.btn-primary.btn-xl.text-uppercase(href='#services') Tell Me More
+  header.masthead(style="height: 400px; object-fit: cover; center/cover no-repeat;")
+    .container.h-100.d-flex.align-items-center.justify-content-center
+      span.text-white.px-3.py-2.fs-1.fw-bold.shadow.bg-dark.bg-opacity-50.rounded Món Ăn
     script(type="text/javascript" src="/javascripts/navBar.js")
-  section#services.page-section
-    .container
-      .text-center
-        h2.section-heading.text-uppercase Services
+
+  .container
+    style.
+      .carousel-img {
+        width: 100%;
+        height: 100vh;
+        object-fit: cover;
+        border-radius: 10px;
+      }
+    .carousel.slide#bannerCarouselp-5(data-bs-ride="carousel" data-bs-interval="2000")
+      .carousel-inner
+        .carousel-item.active
+          img(src="/images/img/banner/banner_1.jpg" class="d-block w-100 carousel-img")
+        .carousel-item
+          img(src="/images/img/banner/banner_2.jpg" class="d-block w-100 carousel-img")
+        .carousel-item
+          img(src="/images/img/banner/banner_3.jpg" class="d-block w-100 carousel-img")
+        .carousel-item
+          img(src="/images/img/banner/banner_4.jpg" class="d-block w-100 carousel-img")
+        .carousel-item
+          img(src="/images/img/banner/banner_5.jpg" class="d-block w-100 carousel-img")
+        .carousel-item
+          img(src="/images/img/banner/banner_6.jpg" class="d-block w-100 carousel-img")
+        .carousel-item
+          img(src="/images/img/banner/banner_7.jpg" class="d-block w-100 carousel-img")
+      button.carousel-control-prev(type="button" data-bs-target="#bannerCarousel" data-bs-slide="prev")
+        span.carousel-control-prev-icon(aria-hidden="true")
+        span.visually-hidden Previous
+      button.carousel-control-next(type="button" data-bs-target="#bannerCarousel" data-bs-slide="next")
+        span.carousel-control-next-icon(aria-hidden="true")
+        span.visually-hidden Next
+
+    .row
+      .text-center.mt-5
+        h2.section-heading Đề Xuất Món Ăn
         h3.section-subheading.text-muted Lorem ipsum dolor sit amet consectetur.
-      .row.text-center
-        .col-md-4
-          span.fa-stack.fa-4x
-            i.fa.fa-circle.fa-stack-2x.text-primary
-            i.fa.fa-shopping-cart.fa-stack-1x.fa-inverse
-          h4.my-3 E-Commerce
-          p.text-muted
-            | Lorem ipsum dolor sit amet, consectetur adipisicing elit. Minima maxime quam architecto quo inventore harum ex magni, dicta impedit.
-        .col-md-4
-          span.fa-stack.fa-4x
-            i.fa.fa-circle.fa-stack-2x.text-primary
-            i.fa.fa-laptop.fa-stack-1x.fa-inverse
-          h4.my-3 Responsive Design
-          p.text-muted
-            | Lorem ipsum dolor sit amet, consectetur adipisicing elit. Minima maxime quam architecto quo inventore harum ex magni, dicta impedit.
-        .col-md-4
-          span.fa-stack.fa-4x
-            i.fa.fa-circle.fa-stack-2x.text-primary
-            i.fa.fa-lock.fa-stack-1x.fa-inverse
-          h4.my-3 Web Security
-          p.text-muted
-            | Lorem ipsum dolor sit amet, consectetur adipisicing elit. Minima maxime quam architecto quo inventore harum ex magni, dicta impedit.
+      .row.text-center.mt-4
+        each Dishes in dish
+          .col-lg-3.col-md-6.mb-3
+            .card.shadow-sm.border-0.rounded-3
+              img.card-img-top.rounded-top(
+                src=Dishes.imgt ? `data:image/jpeg;base64,${Dishes.img.toString('base64')}` : "/images/img/about/3.jpg"
+                alt=Dishes.dishes_name
+                style="height: 200px; object-fit: cover;"
+              )
+              .card-body.bg-white
+                h4.card-title.text-warning.font-weight-bold #{Dishes.name}
+                p.card-text.text-muted  #{Dishes.city_name}
+                p.card-text.text-muted(style="margin-bottom: 10px; font-size: 0.9rem; line-height: 1.5;")
+                  | #{Dishes.description.length > 100 ? Dishes.description.substring(0, 100) + '...' : Dishes.description}
+                a.btn.btn-outline-primary.btn-sm.text-uppercase.mt-2(href=`/api/v1/restaurant/${Dishes.id}` ,style="color: #007bff; transition: background-color 0.3s, color 0.3s;") View Restaurant
+

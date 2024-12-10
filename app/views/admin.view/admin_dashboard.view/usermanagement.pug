@@ -1,0 +1,36 @@
+extends ../admin_dashboard
+
+block main-content
+  h2 User Management
+  .container-filter
+    // Tiêu đề cột
+    .row.fw-bold.border-bottom.py-2
+      .col-1 ID
+      .col-2 Tên người dùng
+      .col-3 Email
+      .col-2 Số điện thoại
+      .col-2 Địa chỉ
+      .col-1 Vai trò
+      .col-1.text-center Hành động
+
+    // Danh sách người dùng
+    each user in Users
+      .row.align-items-center.border-bottom.py-2
+        .col-1= user.id
+        .col-2= user.username
+        .col-3= user.email
+        .col-2= user.phone
+        .col-2= user.adress
+        .col-1
+          if user.role === 1
+            span.text-success Quản trị viên
+          else
+            span.text-info Người dùng
+        .col-1.text-center
+          form(method="POST" action=`/api/v1/admin/usermanagement/${user.id}?_method=DELETE`)
+            button.btn.btn-danger(type="submit") Xóa
+
+    // Button thêm người dùng mới
+    .row.mt-3
+      .col.text-end
+        a.btn.btn-outline-success(href="/api/v1/admin/createuser") Thêm người dùng mới

@@ -1,0 +1,31 @@
+extends ../admin_dashboard
+
+block main-content
+  h2.text-secondary.text-center.mt-3 Quản lý món ăn
+  .container-fluid
+    // Tiêu đề cột
+    .row.fw-bold.border-bottom.py-2
+      .col-1 ID
+      .col-3 Tên món ăn
+      .col-3 Mô tả
+      .col-2 Thành phố
+      .col-1.text-center Hình ảnh
+      .col-1.text-center Hành động
+
+    // Danh sách món ăn
+    each dish in Dishes
+      .row.align-items-center.border-bottom.py-2
+        .col-1= dish.id
+        .col-3= dish.name
+        .col-3= dish.description.length > 50 ? dish.description.substring(0, 50) + '...' : dish.description
+        .col-2= dish.city_name
+        .col-1.text-center
+          img(src=dish.img ? `data:image/jpeg;base64,${dish.img.toString('base64')}` : "/images/img/about/3.jpg", alt=dish.name, style="width: 50px; height: 50px; object-fit: cover; border-radius: 5px;")
+        .col-1.text-center
+          form(method="POST" action=`/api/v1/admin/dish_main/${dish.id}?_method=DELETE`)
+            button.btn.btn-danger(type="submit") Xóa 
+
+    // Button thêm món ăn mới
+    .row.mt-3
+      .col.text-end
+        a.btn.btn-outline-success(href="/api/v1/admin/dish_main/createdish") Thêm món ăn mới
