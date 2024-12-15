@@ -19,8 +19,11 @@ block content
         .col-md-2(style="margin-right: 20px;")
           select#city_id.form-control(name="city_id" required)
             option(value="" disabled selected) -- Select a City --
-            each city in City
-              option(value=city.city_id) #{city.city_name}
+            - if(City)
+              each city in City
+                option(value=city.city_id) #{city.city_name}
+            - else
+              option(value="") None City
         .col-md-2
           button.btn.btn-primary(type="submit") Lọc
 
@@ -28,12 +31,11 @@ block content
   #dishes
     .container
       .col-md-6(style="margin-right: 200px;")
-        #map(style="border: 1px solid #ddd; border-radius: 8px; height: 400px;")
+        #map(style="border: 1px solid #ddd; border-radius: 8px; ")
       .col-md-4
         .row.ml-4
           - if (!dishes || dishes.length === 0)
             .text-center.mt-5
-              img(src="/images/img/about/3.jpg" alt="No Data" style="max-width: 200px;")
               p.mt-3.text-muted No dishes found. Check back later!
           - else
             each dish in dishes
@@ -82,10 +84,15 @@ block content
 
   style.
     #map {
-      background-image: url('/images/img/about/3.jpg'); /* Placeholder nếu không có dữ liệu bản đồ */
+      background-image: url('/images/img/bandoVN.png'); /* Placeholder nếu không có dữ liệu bản đồ */
       background-size: cover;
       background-position: center;
+      width: 408px;
+      margin-left: 90px;
+      padding-top: 100%; /* Tỷ lệ 1:1 để cân bằng chiều rộng và chiều cao */
+      position: relative; /* Giữ nguyên kích thước để nội dung khác không bị ảnh hưởng */
     }
+
     .card {
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
       transition: all 0.3s ease-in-out;

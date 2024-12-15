@@ -35,7 +35,7 @@ export const Dish = sequelize.define("Dish", {
   restaurant_id: Sequelize.INTEGER,
   description: Sequelize.STRING,
   price: Sequelize.FLOAT,
-  img: Sequelize.STRING,
+  img: Sequelize.BLOB,
   city_id: Sequelize.INTEGER,
   user_id: Sequelize.INTEGER,
   main_dish: Sequelize.BOOLEAN,

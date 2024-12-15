@@ -14,17 +14,18 @@ block main-content
             label(for="file-input" style="color: #007bff; font-weight: bold; position: absolute;") + Upload Image
             input#file-input.d-none(type="file" name="Restaurant")
 
-            script.
-              const inputTag = document.getElementById('file-input');
-              const previewImageTag = document.getElementById('preview');
-              inputTag.onchange = () => {
-                const [file] = inputTag.files;
-                if (file) {
-                  previewImageTag.src = URL.createObjectURL(file);
-                  previewImageTag.style.display = 'block';
-                  document.querySelector('label[for="file-input"]').style.display = 'none';
-                }
+          script.
+            const inputTag = document.getElementById('file-input');
+            const previewImageTag = document.getElementById('preview');
+            inputTag.onchange = () => {
+              const [file] = inputTag.files;
+              if (file) {
+                previewImageTag.src = URL.createObjectURL(file);
+                previewImageTag.style.display = 'block';
+                document.querySelector('label[for="file-input"]').style.display = 'none';
               }
+            }
+
 
         .col-lg-8
           .form-group
@@ -44,7 +45,7 @@ block main-content
             select#city_id.form-control(name="main_dishes" required)
               option(value="" disabled selected) -- Select a Main Dishes--
               each main_dish in Main_dish
-                option(value=main_dish.name) #{main_dish.name}
+                option(value=main_dish.id) #{main_dish.name}
 
           .form-group
             label(for="city_id" style="margin-right: 140px;") City:

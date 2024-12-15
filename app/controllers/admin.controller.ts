@@ -292,6 +292,8 @@ export class AdminController extends ApplicationController {
     try {
       // Lấy danh sách món ăn của nhà hàng từ database
 
+
+
       const user = (await models.User.findOne({
         where: {
           id: Users.id,
@@ -391,7 +393,7 @@ export class AdminController extends ApplicationController {
 
       // Lấy danh sách món ăn và thông tin thành phố
       const Dishes = (await models.Dish.findAll({
-        where: { main_dish: 1 }, // Điều kiện lọc
+        where: { main_dish: true }, // Điều kiện lọc
         attributes: ["id", "name", "description", "city_id", "img"], // Lấy những thuộc tính cần thiết
       })) as DishInstance[];
 
@@ -501,10 +503,6 @@ export class AdminController extends ApplicationController {
     console.log("Dish data received:", req.body.file); // Kiểm tra dữ liệu món ăn từ form
 
     // Kiểm tra dữ liệu món ăn, nếu thiếu thông tin cần thiết thì trả về lỗi
-    if (!name || !description || !city_id) {
-      req.flash("errors", { msg: "All fields are required." });
-      return res.redirect("/api/v1/admin/dish_main/createdish"); // Điều hướng lại form tạo món ăn
-    }
 
     try {
       // Tạo mới món ăn trong cơ sở dữ liệu
@@ -514,14 +512,14 @@ export class AdminController extends ApplicationController {
         price: null,
         restaurant_id: null,
         city_id: city_id,
-        main_dish: 1,
+        main_dish: true,
         user_id: null,
         img: file, // Lưu ảnh món ăn nếu có
       })) as DishInstance;
 
       // Nếu món ăn được tạo thành công, gửi thông báo và chuyển hướng
       req.flash("success", { msg: `Created dish ${dish.name}` });
-      res.redirect("api/v1/admin/dish_main"); // Điều hướng đến trang quản lý món ăn
+      res.redirect("/api/v1/admin/dish_main"); // Điều hướng đến trang quản lý món ăn
     } catch (error) {
       // Xử lý lỗi nếu có trong quá trình tạo món ăn
       console.error("Error creating dish:", error); // Thêm câu lệnh để kiểm tra lỗi chi tiết

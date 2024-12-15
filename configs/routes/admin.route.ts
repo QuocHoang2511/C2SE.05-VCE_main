@@ -41,7 +41,7 @@ export class AdminRoute {
     this.path
       .route("/dish_main/createdish")
       .get(this.adminController.createDishIndex)
-      .post(upload.single("img"), this.adminController.createDish);
+      .post(upload.single("imgdish"), this.adminController.createDish);
     Route.resource(this.path, this.adminController, {
       only: [RestActions.Index, RestActions.Destroy],
     });

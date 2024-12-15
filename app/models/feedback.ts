@@ -8,6 +8,7 @@ export interface FeedbackAttributes {
   restaurant_id?: number;
   content?: string;
   rating?: number;
+  sentiment: number;
 }
 
 export interface FeedbackInstance {
@@ -19,6 +20,7 @@ export interface FeedbackInstance {
   restaurant_id: number;
   content: string;
   rating: number;
+  sentiment: number;
 }
 
 export const Feedback = sequelize.define("Feedback", {
@@ -26,6 +28,7 @@ export const Feedback = sequelize.define("Feedback", {
   restaurant_id: Sequelize.INTEGER,
   content: Sequelize.STRING,
   rating: Sequelize.INTEGER,
+  sentiment: Sequelize.INTEGER,
 });
 
 export const associate = () => {

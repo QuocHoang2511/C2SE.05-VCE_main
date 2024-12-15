@@ -3,5 +3,5 @@ dist
 db/schema/*.db
 uploads
 .env
-
 yarn-error.log
+venv/

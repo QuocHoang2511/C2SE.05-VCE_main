@@ -16,7 +16,7 @@ export class RestaurantController extends ApplicationController {
       const { count, rows: restaurants } =
         await models.Restaurant.findAndCountAll({
           where: {
-            approved: 1,
+            approved: true,
             ...(main_dish && { main_dishes: parseInt(main_dish as string) }),
           }, // Đổi từ main_dish thành main_dishes
           limit: limit,

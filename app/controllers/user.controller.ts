@@ -210,7 +210,7 @@ export class UserController extends ApplicationController {
       // Truy vấn danh sách nhà hàng với phân trang
       const { count, rows: restaurants } =
         await models.Restaurant.findAndCountAll({
-          where: { user_id: User.id, favourite: 1 },
+          where: { user_id: User.id, favourite: true },
           limit: limit,
           offset: offset,
         });
@@ -253,10 +253,10 @@ export class UserController extends ApplicationController {
 
       // Lấy danh sách nhà hàng của user
       const userRestaurants = await models.Restaurant.findAll({
-        where: { user_id: User.id, approved: 1 },
+        where: { user_id: User.id, approved: true },
       });
       const main_dish = await models.Dish.findAll({
-        where: { main_dish: 1 },
+        where: { main_dish: true },
       });
       console.log("main_dish", main_dish);
 
@@ -309,9 +309,9 @@ export class UserController extends ApplicationController {
           city_id,
           img_restaurant: file, // Lưu file dưới dạng Base64
           description,
-          approved: 0, // Mặc định là được duyệt
+          approved: false, // Mặc định là được duyệt
           user_id: User.id, // Liên kết nhà hàng với người dùng
-          favourite: 1,
+          favourite: true,
         });
       } else {
         await models.Restaurant.create({
@@ -322,9 +322,9 @@ export class UserController extends ApplicationController {
           city_id,
           img_restaurant: file, // Lưu file dưới dạng Base64
           description,
-          approved: 1, // Mặc định là được duyệt
+          approved: true, // Mặc định là được duyệt
           user_id: User.id, // Liên kết nhà hàng với người dùng
-          favourite: 1,
+          favourite: true,
         });
       }
       // Hiển thị thông báo thành công
@@ -378,6 +378,8 @@ export class UserController extends ApplicationController {
   }
   public async dish_menu(req: Request, res: Response) {
     const { dishes_name, city_id, price, description } = req.body;
+    const file = req.file ? convertFileToBase64(req.file) : null;
+
     const { restaurant_id } = req.params; // Lấy restaurant_id từ params
     console.log("Restaurant ID from params:", restaurant_id); // Kiểm tra giá trị restaurant_id
     if (!req.session || !req.session.user) {
@@ -396,9 +398,6 @@ export class UserController extends ApplicationController {
         restaurant_id,
       });
 
-      const file = req.file ? convertFileToBase64(req.file) : null;
-      console.log("File received:", req.file);
-
       // Tạo mới món ăn
       await models.Dish.create({
         name: dishes_name,
@@ -406,7 +405,7 @@ export class UserController extends ApplicationController {
         img: file, // Lưu file dưới dạng Base64
         description,
         city_id,
-        main_dish: 0,
+        main_dish: false,
         user_id: User.id,
         restaurant_id,
       });

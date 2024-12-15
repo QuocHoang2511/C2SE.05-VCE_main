@@ -10,17 +10,16 @@ block content
 
     section(style="padding-top: 117px;")
       // Header
-      header.header
-        h1 Profile
-        .button-header
-          button.logout-button(onclick="confirmLogout()") Logout
+      header.header(style="margin-top: 31px;")
+        h1.text-white.px-3.py-2.fw-bold.shadow.rounded Hồ Sơ
+
 
       .container
         // Sidebar
         aside.sidebar
           .profile-info
             img.profile-pic(
-              src=User.img_restaurant ? `data:image/jpeg;base64,${User.img_restaurant.toString('base64')}` : "/images/img/about/3.jpg"
+              src=User.avatar ? `data:image/jpeg;base64,${User.avatar.toString('base64')}` : "/images/img/about/3.jpg"
               alt=User.name
             )
             p.name #{User.username}

@@ -17,7 +17,7 @@ export class ExploreController extends ApplicationController {
       // Truy vấn theo city_id nếu có
       const { count, rows: dishes } = (await models.Dish.findAndCountAll({
         where: {
-          main_dish: 1,
+          main_dish: true,
           ...(city_id && { city_id: parseInt(city_id as string) }),
         },
         limit: limit,

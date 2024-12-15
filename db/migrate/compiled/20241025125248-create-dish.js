@@ -21,7 +21,7 @@ module.exports = {
                 type: Sequelize.FLOAT
             },
             img: {
-                type: Sequelize.STRING
+                type: Sequelize.BLOB
             },
             city_id: {
                 type: Sequelize.INTEGER

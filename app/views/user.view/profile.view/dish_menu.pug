@@ -11,7 +11,7 @@ block main-content
           .col-lg-4.col-md-6.mb-3
             .card.shadow-sm.border-0.rounded-3
               img.card-img-top.rounded-top(
-                src=Dishes.imgt ? `data:image/jpeg;base64,${Dishes.img.toString('base64')}` : "/images/img/about/3.jpg"
+                src=Dishes.img ? `data:image/jpeg;base64,${Dishes.img.toString('base64')}` : "/images/img/about/3.jpg"
                 alt=Dishes.dishes_name
                 style="height: 200px; object-fit: cover;"
               )
@@ -44,17 +44,17 @@ block main-content
                 label(for="file-input" style="color: #007bff; font-weight: bold; position: absolute;") + Upload Image
                 input#file-input.d-none(type="file" name="Dish")
 
-                script.
-                  const inputTag = document.getElementById('file-input');
-                  const previewImageTag = document.getElementById('preview');
-                  inputTag.onchange = () => {
-                    const [file] = inputTag.files;
-                    if (file) {
-                      previewImageTag.src = URL.createObjectURL(file);
-                      previewImageTag.style.display = 'block';
-                      document.querySelector('label[for="file-input"]').style.display = 'none';
-                    }
+              script.
+                const inputTag = document.getElementById('file-input');
+                const previewImageTag = document.getElementById('preview');
+                inputTag.onchange = () => {
+                  const [file] = inputTag.files;
+                  if (file) {
+                    previewImageTag.src = URL.createObjectURL(file);
+                    previewImageTag.style.display = 'block';
+                    document.querySelector('label[for="file-input"]').style.display = 'none';
                   }
+                }
 
             .col-lg-8
               .form-group
