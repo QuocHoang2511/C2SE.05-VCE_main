@@ -108,6 +108,7 @@ export class FeedbackController extends ApplicationController {
         });
         return res.redirect(`/api/v1/auth/signin`);
       }
+      var comment = req.body.comment;
 
       const scriptPath = "app/python/test_phoBERT.py";
       const sentiment = await runPythonScript(scriptPath, [content]);
