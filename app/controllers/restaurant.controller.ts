@@ -1,58 +1,86 @@
 import { Request, Response } from "express";
 import { ApplicationController } from ".";
 import models from "../models";
-import { UserInstance } from "../models/user";
+import { FeedbackInstance } from "../models/feedback";
 
 export class RestaurantController extends ApplicationController {
   public async index(req: Request, res: Response) {
-    const { main_dish } = req.params; // Lấy restaurant_id từ params
-
+    const { main_dish } = req.params;
     try {
+      console.log("main_dish param received:", main_dish);
+
       const page = parseInt(req.query.page as string) || 1;
-      const limit = 4; // Số lượng nhà hàng hiển thị mỗi trang
+      const limit = 4;
       const offset = (page - 1) * limit;
 
+      const whereCondition: any = { approved: true };
+      if (main_dish) whereCondition.main_dishes = parseInt(main_dish);
+
       // Truy vấn danh sách nhà hàng
-      const { count, rows: restaurants } =
-        await models.Restaurant.findAndCountAll({
-          where: {
-            approved: true,
-            ...(main_dish && { main_dishes: parseInt(main_dish as string) }),
-          }, // Đổi từ main_dish thành main_dishes
-          limit: limit,
-          offset: offset,
+      const restaurants = await models.Restaurant.findAll({
+        where: whereCondition,
+        include: [
+          {
+            model: models.Feedback,
+            attributes: ["rating", "sentiment"],
+            as: "Feedbacks",
+          },
+        ],
+      });
+
+      console.log("Restaurants fetched:", restaurants);
+
+      // Xử lý dữ liệu feedback
+      const calculateSentimentAndRating = (feedbacks: FeedbackInstance[]) => {
+        let count_pos = 0,
+          count_neg = 0;
+
+        feedbacks.forEach((feedback) => {
+          if (feedback.sentiment === 2) ++count_pos;
+          else if (feedback.sentiment === 0) ++count_neg;
         });
 
-      console.log("Total count of restaurants: ", count);
-      console.log("Restaurants data: ", restaurants);
+        const totalFeedbacks = count_pos + count_neg;
+        const averageRating =
+          feedbacks.reduce((sum, f) => sum + (f.rating || 0), 0) /
+          (feedbacks.length || 1);
+        const percent_pos =
+          totalFeedbacks > 0 ? (count_pos / totalFeedbacks) * 100 : 0;
 
-      // Nếu người dùng đã đăng nhập, lấy thông tin user
-      let user = null;
-      if (req.session?.user) {
-        user = (await models.User.findOne({
-          where: { id: req.session.user.id },
-        })) as UserInstance;
+        return { averageRating, percent_pos };
+      };
 
-        if (!user) {
-          console.log("User not found in database");
-          req.flash("errors", { msg: "User not found." });
-          return res.redirect("/login");
-        }
-      }
+      // Enrich dữ liệu nhà hàng
+      const enrichedRestaurants = restaurants.map((restaurant) => {
+        const feedbacks = (restaurant as any).Feedbacks as FeedbackInstance[];
+        const { averageRating, percent_pos } = calculateSentimentAndRating(
+          feedbacks || []
+        );
 
-      // Render trang nhà hàng (có hoặc không có thông tin người dùng)
+        return {
+          ...(restaurant as any).get({ plain: true }),
+          averageRating,
+          percent_pos,
+        };
+      });
+
+      enrichedRestaurants.sort((a, b) => b.percent_pos - a.percent_pos);
+
+      // Phân trang
+      const paginatedRestaurants = enrichedRestaurants.slice(
+        offset,
+        offset + limit
+      );
+      const totalPages = Math.ceil(enrichedRestaurants.length / limit);
+
       res.render("restaurant.view/index", {
-        User: user, // Nếu không đăng nhập, giá trị sẽ là null
-        restaurant: restaurants,
+        restaurant: paginatedRestaurants,
         currentPage: page,
-        totalPages: Math.ceil(count / limit),
+        totalPages,
       });
     } catch (error) {
-      console.error("Error fetching restaurants or user:", error);
-      req.flash("errors", {
-        msg: "An error occurred while loading restaurants.",
-      });
-      res.redirect("/error"); // Chuyển hướng đến trang lỗi (nếu có)
+      console.error("Error fetching restaurants:", error);
+      res.redirect("/error");
     }
   }
 }

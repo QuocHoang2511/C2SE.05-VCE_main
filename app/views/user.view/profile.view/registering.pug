@@ -52,7 +52,7 @@ block main-content
             select#city_id.form-control(name="city_id" required)
               option(value="" disabled selected) -- Select a City --
               each city in City
-                option(value=city.city_id) #{city.city_name}
+                option(value=city.id) #{city.city_name}
 
           .form-group
             label(for="description") Description:

@@ -185,6 +185,7 @@ export class AuthController extends ApplicationController {
     if (user) {
       const User = (req.session.user = {
         id: user.id,
+        role: user.role,
       });
 
       console.log(" User=req.session: ", User);

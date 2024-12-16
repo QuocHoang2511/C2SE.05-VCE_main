@@ -258,7 +258,6 @@ export class UserController extends ApplicationController {
       const main_dish = await models.Dish.findAll({
         where: { main_dish: true },
       });
-      console.log("main_dish", main_dish);
 
       // Render trang
       res.render("user.view/profile.view/registering", {
@@ -309,7 +308,7 @@ export class UserController extends ApplicationController {
           city_id,
           img_restaurant: file, // Lưu file dưới dạng Base64
           description,
-          approved: false, // Mặc định là được duyệt
+          approved: true, // Mặc định là được duyệt
           user_id: User.id, // Liên kết nhà hàng với người dùng
           favourite: true,
         });
@@ -322,7 +321,7 @@ export class UserController extends ApplicationController {
           city_id,
           img_restaurant: file, // Lưu file dưới dạng Base64
           description,
-          approved: true, // Mặc định là được duyệt
+          approved: false, // Mặc định là được duyệt
           user_id: User.id, // Liên kết nhà hàng với người dùng
           favourite: true,
         });
@@ -336,6 +335,25 @@ export class UserController extends ApplicationController {
         msg: "An error occurred while creating the restaurant.",
       });
       return res.redirect("/"); // Chuyển hướng về trang chính
+    }
+  }
+
+  public async destroy(req: Request, res: Response) {
+    try {
+      const { user_id } = req.params;
+
+      // Xóa người dùng
+      await models.User.destroy({
+        where: {
+          id: user_id, // Sử dụng `id` thay vì `userId`
+        },
+      });
+      req.flash("success", { msg: "Người dùng đã được xóa thành công." });
+      res.redirect("/api/v1/admin/usermanagement");
+    } catch (error) {
+      console.error("Error deleting user:", error);
+      req.flash("errors", { msg: "Đã xảy ra lỗi khi xóa người dùng." });
+      res.redirect("/error");
     }
   }
 

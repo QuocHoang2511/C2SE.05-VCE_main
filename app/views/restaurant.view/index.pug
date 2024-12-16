@@ -1,10 +1,11 @@
 extends ../layout
 
 block content
-  header.masthead(style="height: 400px; object-fit: cover;  center/cover no-repeat;")
+  header.masthead(style="height: 400px; object-fit: cover; center/cover no-repeat;")
     .container.h-100.d-flex.align-items-center.justify-content-center
       span.text-white.px-3.py-2.fs-1.fw-bold.shadow.bg-dark.bg-opacity-50.rounded Nhà Hàng
-    script(type="text/javascript" src="/javascripts/navBar.js")  
+    script(type="text/javascript" src="/javascripts/navBar.js")
+
   // Danh sách nhà hàng
   section#services.page-section
     .container
@@ -22,7 +23,6 @@ block content
                     src=restaurants.img_restaurant ? `data:image/jpeg;base64,${restaurants.img_restaurant.toString('base64')}` : "/images/img/about/3.jpg"
                     alt=restaurants.restaurant_name
                   )
-
                   .card-body.text-center
                     h5.card-title.text-truncate(style="font-size: 1.25rem; font-weight: bold;")= restaurants.restaurant_name
                     p.card-text.text-muted.small.mb-2
@@ -33,6 +33,19 @@ block content
                     p.card-text.mb-3
                       strong Phone:
                       | #{restaurants.phone_number}
+                    p.card-text.mb-2
+                      strong đánh giá:
+                        each i in [1, 2, 3, 4, 5]
+                          - if (restaurants.averageRating && i <= Math.floor(restaurants.averageRating))
+                            i.fa.fa-star.text-warning
+                          - else if (restaurants.averageRating && i === Math.ceil(restaurants.averageRating) && restaurants.averageRating % 1 !== 0)
+                            i.fa.fa-star-half-o.text-warning
+                          - else
+                            i.fa.fa-star-o.text-muted
+
+                    p.card-text.mb-3
+                      strong Đánh giá tốt:
+                      | #{restaurants.percent_pos.toFixed(2)}%
                     a.btn.btn-outline-primary.btn-sm.text-uppercase.mt-2(href=`/api/v1/feedback/${restaurants.id}` style="color: #007bff; transition: background-color 0.3s, color 0.3s;") View Restaurant
 
   // Hiệu ứng hover thẻ card
@@ -41,94 +54,3 @@ block content
       transform: translateY(-5px);
       box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
     }
-
-  // Pagination
-  nav.pagination-nav
-    ul.pagination.justify-content-center
-      - const visiblePages = 5; // Số trang tối đa hiển thị xung quanh trang hiện tại
-      - const startPage = Math.max(1, currentPage - Math.floor(visiblePages / 2));
-      - const endPage = Math.min(totalPages, startPage + visiblePages - 1);
-
-      // Previous button
-      - if (currentPage > 1)
-        li.page-item
-          a.page-link(href=`?page=${currentPage - 1}` style="color: #007bff;") Previous
-
-      // Page numbers
-      - for (let i = startPage; i <= endPage; i++)
-        li.page-item(class=(i === currentPage ? 'active' : ''))
-          a.page-link(href=`?page=${i}` style=(i === currentPage ? "background-color: #007bff; border-color: #007bff; color: #fff;" : "color: #007bff;")) #{i}
-
-      // "..." indicator if needed
-      - if (endPage < totalPages)
-        li.page-item.disabled
-          span.page-link ... 
-        li.page-item
-          a.page-link(href=`?page=${totalPages}` style="color: #007bff;") #{totalPages}
-
-      // Next button
-      - if (currentPage < totalPages)
-        li.page-item
-          a.page-link(href=`?page=${currentPage + 1}` style="color: #007bff;") Next
-
-
-  style.
-
-    .pagination a {
-      padding: 8px 12px;
-      margin: 0 2px;
-      background-color: #f0f0f0;
-      border-radius: 4px;
-      text-decoration: none;
-      font-size: 14px;
-    }
-
-    .pagination a:hover {
-      background-color: #e0e0e0;
-    }
-
-    .pagination .active .page-link {
-      background-color: #ff6600;
-      border-color: #ff6600;
-      color: white;
-    }
-
-    .pagination .page-item.disabled .page-link {
-      color: #ccc;
-      cursor: not-allowed;
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-      .comment-section
-        h2 Feedbacks for the restaurant
-        if feedbacks.length
-          each feedback in feedbacks
-            .comment-wrp
-              .comment.container
-                .c-user
-                  img.usr-img(src=feedback.User.avatar alt=feedback.User.username)
-                  p.usr-name= feedback.User.username
-                  p.cmnt-at= feedback.createdAt.toLocaleString("vi-VN")
-                p.c-text= feedback.content
-
-        else
-          p No feedbacks available for this restaurant.
-
-        if User
-          .reply-input.container
-            img.usr-img(src=User.avatar alt=User.username)
-            form(action=`/feedback/${restaurant_id}` method="POST")
-              textarea.cmnt-input(name="content" placeholder="Add a comment..." required)
-              button.bu-primary(type="submit") SEND
-        else
-          p Please log in to add feedback.

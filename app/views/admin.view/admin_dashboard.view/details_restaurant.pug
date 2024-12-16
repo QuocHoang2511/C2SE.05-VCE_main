@@ -1,43 +1,62 @@
 extends ../admin_dashboard
 
 block main-content
-  h3.text-secondary.text-center.my-3.mb-5 User's Restaurants
+  h3.text-secondary.text-center.my-3.mb-5 Nhà hàng của người dùng
   .container-fluid
-    .row
-      // Phần thông tin User
-      if User
-        .col-lg-6.col-md-6.mb-3
-          .profile-info.mt-2(style=("  border-right: #72727275 solid 3px;"))
-            img.profile-pic(
-              src=User.avatar ? `data:image/jpeg;base64,${User.avatar.toString('base64')}` : "/images/img/about/3.jpg"
-              alt=User.name
+
+    // Hàng 1: Thông tin người dùng
+    .row.mb-5
+      if User1
+        .col-12.d-flex.align-items-center.justify-content-center
+          .profile-info.text-center
+            img.profile-pic.rounded-circle(
+              src=User1.avatar ? `data:image/jpeg;base64,${User1.avatar.toString('base64')}` : "/images/img/about/3.jpg"
+              alt=User1.name
+              style="width: 120px; height: 120px; object-fit: cover; border: 3px solid #17a2b8;"
             )
-            p.name #{User.username}
-            p.email #{User.email}
+            h4.mt-3.text-primary.font-weight-bold #{User1.username}
+            p.text-muted.mb-1 Email: #{User1.email}
+            p.text-muted Phone: #{User1.phone || "Chưa cập nhật"}
       else
         .col-12
           .alert.alert-warning.text-center.mt-3
             | Không có thông tin người dùng.
 
+    // Hàng 2: Thông tin nhà hàng và biểu đồ đánh giá
+    .row.mb-5
       if UserRestaurants
-        .col-lg-6.col-md-6.mb-3
+        .col-lg-6.col-md-12.mb-3
           .card.shadow-sm.border-0.rounded-3
             img.card-img-top.rounded-top(
               src=UserRestaurants.img_restaurant ? `data:image/jpeg;base64,${UserRestaurants.img_restaurant.toString('base64')}` : "/images/img/about/3.jpg"
               alt=UserRestaurants.restaurant_name
-              style="height: 150px; object-fit: cover;"
+              style="height: 200px; object-fit: cover; border-bottom: 3px solid #17a2b8;"
             )
             .card-body.bg-white.text-center
-              h5.card-title.text-warning.font-weight-bold #{UserRestaurants.restaurant_name}
-              p.card-text.text-muted #{UserRestaurants.description}
+              h4.card-title.text-warning.font-weight-bold #{UserRestaurants.restaurant_name}
+              p.card-text.text-muted.font-italic #{UserRestaurants.description || "Chưa có mô tả"}
+              p.text-secondary.font-weight-bold Đánh giá: 
+                each i in [1, 2, 3, 4, 5]
+                  if i <= fullStars
+                    i.fa.fa-star.text-warning
+                  else if i == fullStars + 1 && halfStar == 1
+                    i.fa.fa-star-half-o.text-warning
+                  else
+                    i.fa.fa-star-o.text-muted
       else
-        .col-12
+        .col-lg-6.col-md-12
           .alert.alert-warning.text-center.mt-3
             | Không có nhà hàng nào được tìm thấy.
 
+      .col-lg-6.col-md-12.d-flex.justify-content-center.align-items-center
+        if percent_pos == 0 && percent_neg == 0
+          .alert.alert-info.text-center Chưa có đánh giá nào.
+        else
+          canvas#sentimentChart(style="max-width: 300px; max-height: 300px;")
+
+    // Hàng 3: Menu món ăn của nhà hàng
     .row.mt-4
-      // Phần món ăn của nhà hàng
-      h3.text-secondary.text-center.mt-3 Menu Restaurant
+      h3.text-secondary.text-center.mb-4 Menu Nhà Hàng
       if dish.length > 0
         each Dishes in dish
           .col-lg-4.col-md-6.mb-3
@@ -48,21 +67,50 @@ block main-content
                 style="height: 200px; object-fit: cover;"
               )
               .card-body.bg-white.text-center
-                h4.card-title.text-warning.font-weight-bold #{Dishes.name}
-                p.card-text.text-muted Price: #{Dishes.price}
-                p.card-text.text-muted(style="margin-bottom: 10px; font-size: 0.9rem; line-height: 1.5;")
+                h5.card-title.text-warning.font-weight-bold #{Dishes.name}
+                p.card-text.text-muted Price: #{Dishes.price} VND
+                p.card-text.text-muted(style="font-size: 0.9rem; line-height: 1.5;")
                   | #{Dishes.description.length > 100 ? Dishes.description.substring(0, 100) + '...' : Dishes.description}
       else
         .col-12
           .alert.alert-warning.text-center.mt-3
             | Không có món ăn nào trong thực đơn.
-  .row.mt-3
-    .col-12.text-center
-      if UserRestaurants && UserRestaurants.approved
-        a.btn.btn-outline-success(href="/api/v1/admin/restaurants") Trở lại
-      else if UserRestaurants && !UserRestaurants.approved
-        form(method="POST" action=`/api/v1/admin/restaurants/detail/${UserRestaurants.id}/${UserRestaurants.user_id}`)
-          button.btn.btn-outline-warning(type="submit") Phê duyệt nhà hàng
-      else
-        .alert.alert-warning.text-center
-          | Không có thông tin nhà hàng.
+
+    // Hàng 4: Nút điều hướng
+    .row.mt-3
+      .col-12.text-center
+        if UserRestaurants && UserRestaurants.approved
+          a.btn.btn-outline-success(href="/api/v1/admin/restaurants") Trở lại
+        else if UserRestaurants && !UserRestaurants.approved
+          form(method="POST" action=`/api/v1/admin/restaurants/detail/${UserRestaurants.id}/${UserRestaurants.user_id}`)
+            button.btn.btn-outline-warning(type="submit") Phê duyệt nhà hàng
+        else
+          .alert.alert-warning.text-center
+            | Không có thông tin nhà hàng.
+
+  // Script để vẽ biểu đồ nếu có đánh giá
+  if percent_pos > 0 || percent_neg > 0
+    script(src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js")
+    script.
+      const ctx = document.getElementById('sentimentChart').getContext('2d');
+      const sentimentChart = new Chart(ctx, {
+        type: 'pie',
+        data: {
+          labels: ['Đánh Giá Tốt', 'Đánh Giá Xấu'],
+          datasets: [{
+            label: 'Feedback Sentiment',
+            data: [#{percent_pos}, #{percent_neg}],
+            backgroundColor: ['#28a745', '#dc3545'],
+            borderColor: ['#fff', '#fff'],
+            borderWidth: 1
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: {
+              position: 'bottom'
+            }
+          }
+        }
+      });

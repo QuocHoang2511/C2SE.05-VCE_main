@@ -2,9 +2,9 @@ import { Request, Response } from "express";
 import { convertFileToBase64 } from "../../configs/fileUpload";
 import models from "../models";
 import { DishInstance } from "../models/dish"; // Import kiểu FeedbackInstance từ model
+import { FeedbackInstance } from "../models/feedback";
 import { UserInstance } from "../models/user";
 import { ApplicationController } from "./application.controller";
-
 export class AdminController extends ApplicationController {
   public async index(req: Request, res: Response) {
     if (!req.session || !req.session.user) {
@@ -246,8 +246,10 @@ export class AdminController extends ApplicationController {
         return res.redirect("/login"); // Chuyển hướng tới trang đăng nhập nếu không tìm thấy người dùng
       }
 
-      // Lấy danh sách tất cả người dùng
-      const Restaurants = await models.Restaurant.findAll({});
+      // Lấy danh sách nhà hàng theo thứ tự tăng dần của ID
+      const Restaurants = await models.Restaurant.findAll({
+        order: [["id", "ASC"]], // Thêm điều kiện sắp xếp theo ID tăng dần
+      });
 
       // Truyền danh sách nhà hàng vào view
       res.render("admin.view/admin_dashboard.view/restaurant", {
@@ -255,13 +257,14 @@ export class AdminController extends ApplicationController {
         User: user,
       });
     } catch (error) {
-      console.error("Error fetching users:", error);
+      console.error("Error fetching restaurants:", error);
       req.flash("errors", {
-        msg: "Đã xảy ra lỗi khi tải danh sách người dùng.",
+        msg: "Đã xảy ra lỗi khi tải danh sách nhà hàng.",
       });
       res.redirect("/error");
     }
   }
+
   public async restaurantAdminDestroy(req: Request, res: Response) {
     try {
       const { restaurant_id } = req.params;
@@ -281,7 +284,6 @@ export class AdminController extends ApplicationController {
     }
   }
   public async detailRestaurantIndex(req: Request, res: Response) {
-    // Nếu cần kiểm tra session của người dùng, bạn có thể mở lại phần này
     if (!req.session || !req.session.user) {
       console.log("User session not found");
       return res.redirect("/"); // Chuyển hướng tới trang đăng nhập nếu không có user trong session
@@ -289,58 +291,94 @@ export class AdminController extends ApplicationController {
 
     const Users = req.session.user;
     const { restaurant_id, user_id } = req.params;
+
     try {
-      // Lấy danh sách món ăn của nhà hàng từ database
+      let count_pos = 0;
+      let count_neg = 0;
 
+      // Hàm tính sentiment
+      const calculateSentiment = (feedbacks: FeedbackInstance[]) => {
+        feedbacks.forEach((element) => {
+          if (element.sentiment === 2) ++count_pos;
+          else if (element.sentiment === 0) ++count_neg;
+        });
+        const sum_sentiment = count_pos + count_neg;
+        return {
+          percent_pos:
+            sum_sentiment > 0 ? (count_pos / sum_sentiment) * 100 : 0,
+          percent_neg:
+            sum_sentiment > 0 ? (count_neg / sum_sentiment) * 100 : 0,
+        };
+      };
 
+      // Lấy dữ liệu từ DB đồng thời
+      const [feedbacks, user, city, dishes, User1, UserRestaurants] =
+        await Promise.all([
+          models.Feedback.findAll({ where: { restaurant_id } }) as Promise<
+            FeedbackInstance[]
+          >,
+          models.User.findOne({
+            where: { id: Users.id },
+          }) as Promise<UserInstance>,
+          models.City.findOne(),
+          models.Dish.findAll({ where: { restaurant_id } }),
+          models.User.findOne({ where: { id: user_id } }),
+          models.Restaurant.findOne({ where: { id: restaurant_id } }),
+        ]);
 
-      const user = (await models.User.findOne({
-        where: {
-          id: Users.id,
-        },
-      })) as UserInstance;
-
-      const city = await models.City.findOne();
+      // Kiểm tra dữ liệu
       if (!user) {
         console.log("User not found in database");
-        return res.redirect("/"); // Chuyển hướng tới trang đăng nhập nếu không có user trong session
+        return res.redirect("/");
       }
-
-      const dishes = await models.Dish.findAll({
-        where: { restaurant_id },
-      });
-
-      console.log("dissh:", dishes);
-
-      const User1 = await models.User.findOne({
-        where: { id: user_id },
-      });
-      console.log("User:", User1);
-      // Lấy thông tin nhà hàng từ database
-      const UserRestaurants = await models.Restaurant.findOne({
-        where: { id: restaurant_id },
-      });
-
-      console.log("UserRestaurants:", UserRestaurants);
-      // Kiểm tra nếu không tìm thấy nhà hàng
       if (!UserRestaurants) {
         console.log("Restaurant not found");
-        return res.redirect("/error"); // Nếu không tìm thấy nhà hàng, chuyển hướng tới trang lỗi
+        return res.redirect("/error");
       }
 
-      // Truyền dữ liệu nhà hàng và món ăn vào view
+      // Tính sentiment
+      const { percent_pos, percent_neg } = calculateSentiment(feedbacks);
+
+      // Tính điểm rating trung bình từ tất cả feedbacks
+      const averageRating =
+        feedbacks.reduce((sum, feedback) => sum + (feedback.rating || 0), 0) /
+        feedbacks.length;
+
+      // Tính số sao từ rating trung bình
+      const maxRating = 5;
+      const starPercentage = (averageRating / maxRating) * 100; // Tính phần trăm dựa trên rating
+
+      const fullStars = Math.floor(starPercentage / 20); // Số sao đầy đủ
+      const halfStar = starPercentage % 20 >= 10 ? 1 : 0; // Kiểm tra xem có sao nửa không
+      const emptyStars = 5 - fullStars - halfStar; // Số sao rỗng
+
+      console.log("Average Rating:", averageRating);
+      console.log("Star Percentage:", starPercentage, "%");
+      console.log(
+        "Full Stars:",
+        fullStars,
+        "Half Star:",
+        halfStar,
+        "Empty Stars:",
+        emptyStars
+      );
+
+      // Render view
       res.render("admin.view/admin_dashboard.view/details_restaurant", {
         dish: dishes,
         UserRestaurants,
         User1,
         User: user,
+        percent_pos,
+        percent_neg,
+        fullStars,
+        halfStar,
+        emptyStars,
       });
     } catch (error) {
       console.error("Error fetching restaurant details:", error);
-      req.flash("errors", {
-        msg: "Đã xảy ra lỗi khi tải thông tin nhà hàng.",
-      });
-      res.redirect("/error"); // Chuyển hướng tới trang lỗi khi có lỗi xảy ra
+      req.flash("errors", { msg: "Đã xảy ra lỗi khi tải thông tin nhà hàng." });
+      res.redirect("/error");
     }
   }
 
@@ -394,6 +432,7 @@ export class AdminController extends ApplicationController {
       // Lấy danh sách món ăn và thông tin thành phố
       const Dishes = (await models.Dish.findAll({
         where: { main_dish: true }, // Điều kiện lọc
+        order: [["id", "ASC"]], // Thêm điều kiện sắp xếp theo ID tăng dần
         attributes: ["id", "name", "description", "city_id", "img"], // Lấy những thuộc tính cần thiết
       })) as DishInstance[];
 

@@ -21,7 +21,7 @@ block content
             option(value="" disabled selected) -- Select a City --
             - if(City)
               each city in City
-                option(value=city.city_id) #{city.city_name}
+                option(value=city.id) #{city.city_name}
             - else
               option(value="") None City
         .col-md-2

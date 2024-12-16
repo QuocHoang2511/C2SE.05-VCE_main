@@ -43,31 +43,41 @@ block content
       .comment-section
         - if (feedback.length > 0)
           each feedbacks in feedback
-            .comment-wrp
-              .row
-                .col-md-4 
-                  .c-user
-                    .row.comment
-                      .col-md-4
-                        - if (feedbacks.User && feedbacks.User.avatar)
-                          img.usr-img(
-                            style='width: 50px; height: 50px; border-radius: 50%; '
-                            src=feedbacks.User.avatar ? `data:image/jpeg;base64,${feedbacks.User.avatar.toString('base64')}` : "/images/img/about/3.jpg"
-                            alt="Avatar of #{feedbacks.User.username}"
-                          )
-                        - else
-                          img.usr-img(
-                            style='width: 50px; height: 50px; border-radius: 50%; '
-                            src="/images/img/about/3.jpg"
-                            alt="No avatar"
-                          )
-                      .col-md-8
-                        p.cmnt-at #{new Date(feedbacks.createdAt).toLocaleString("vi-VN")}
-                .col-md-6
-                  p.c-text #{feedbacks.content}
+            .comment-wrp.d-flex.align-items-start.my-3
+              // Avatar và thông tin người dùng
+              .c-user.d-flex.align-items-center
+                .usr-img-wrapper.mr-3
+                  - if (feedbacks.User && feedbacks.User.avatar)
+                    img.usr-img(
+                      src=feedbacks.User.avatar ? `data:image/jpeg;base64,${feedbacks.User.avatar.toString('base64')}` : "/images/img/about/3.jpg"
+                      alt="Avatar of #{feedbacks.User.username}"
+                      style="width: 50px; height: 50px; border-radius: 50%;"
+                    )
+                  - else
+                    img.usr-img(src="/images/img/about/3.jpg" alt="Avatar of #{feedbacks.User.username}" style="width: 50px; height: 50px; border-radius: 50%;")
+
+                // Thông tin người dùng và thời gian
+                .user-info
+                  p.cm-name.font-weight-bold #{feedbacks.User.username}
+                  p.cm-time.text-muted #{new Date(feedbacks.createdAt).toLocaleString("vi-VN")}
+
+              // Nội dung bình luận
+              .col-md-8
+                p.comment-text #{feedbacks.content}
+                // Phần hiển thị rating stars
+                .col-md-2
+                  .rating-wrapper.d-flex.justify-content-center
+                    each i in [1, 2, 3, 4, 5]
+                      if i <=feedbacks.rating
+                        i.fa.fa-star.text-warning
+                      else if i ==feedbacks.rating
+                        i.fa.fa-star-half-o.text-warning
+                      else
+                        i.fa.fa-star-o.text-muted
 
         - else
           p No feedbacks available for this restaurant.
+
 
         .reply-input.container
           .row
@@ -85,20 +95,44 @@ block content
                     alt="User Avatar"
                     style='width: 50px; height: 50px; border-radius: 50%; margin-right: 15px;'
                   )
-                .flex-grow-1
+                .flex-grow-1(style="margin-right: 26px;")
                   textarea.cmnt-input.form-control(
                     name="content"
                     placeholder="Write your feedback here..."
                     rows="2"
                     required
                   )
-                input.rating-input.form-control(
-                  type="number"
-                  name="rating"
-                  placeholder="Rating (1-5)"
-                  min="1"
-                  max="5"
-                  required
-                  style="width: 120px; margin-left: 10px;"
-                )
+                // Rating Stars
+                .rating-wrapper.d-flex.justify-content-center
+                  input(type="hidden" name="rating" id="ratingValue" value="0")
+                  each index in [1, 2, 3, 4, 5]
+                    i.fa.fa-star(
+                      id=`star-${index}`
+                      data-value=index
+                      onclick="selectRating(${index})"
+                      style="font-size: 24px; cursor: pointer; color: gray;"
+                    )
               button.bu-primary.btn.btn-primary.mt-3(type="submit" style="width: 100%;") Send Feedback
+
+    // JavaScript cho rating
+    script.
+      document.addEventListener('DOMContentLoaded', function () {
+        function selectRating(rating) {
+          document.getElementById("ratingValue").value = rating;
+          for (let i = 1; i <= 5; i++) {
+            const star = document.getElementById(`star-${i}`);
+            star.style.color = i <= rating ? "gold" : "gray";
+          }
+        }
+
+        // Attach the selectRating function to each star
+        for (let i = 1; i <= 5; i++) {
+          const star = document.getElementById(`star-${i}`);
+          star.addEventListener('click', function() {
+            selectRating(i);
+          });
+        }
+      });
+
+
+

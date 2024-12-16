@@ -17,7 +17,7 @@ block main-content
               )
               .card-body.bg-white
                 h4.card-title.text-warning.font-weight-bold #{Dishes.name}
-                p.card-text.text-muted Price: #{Dishes.price}
+                p.card-text.text-muted Price: #{Dishes.price}vnd
                 p.card-text.text-muted(style="margin-bottom: 10px; font-size: 0.9rem; line-height: 1.5;")
                   | #{Dishes.description.length > 100 ? Dishes.description.substring(0, 100) + '...' : Dishes.description}
                 //- .d-flex.justify-content-between.text-secondary.mt-3
@@ -66,11 +66,11 @@ block main-content
                 select#city_id.form-control(name="city_id" required)
                   option(value="" disabled selected) -- Select a City --
                   each city in City
-                    option(value=city.city_id) #{city.city_name}
+                    option(value=city.id) #{city.city_name}
 
               .form-group
                 label(for="price") Price:
-                input#price.form-control(type="text" name="price" placeholder="Price" required)
+                input#price.form-control(type="text" name="price" placeholder="vnd" required)
 
               .form-group
                 label(style="margin-right: 100px;" for="description") Description:

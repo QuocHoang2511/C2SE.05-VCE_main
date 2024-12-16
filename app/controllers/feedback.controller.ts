@@ -50,19 +50,18 @@ export class FeedbackController extends ApplicationController {
             attributes: ["id", "username", "avatar"],
           },
         ],
-      })) as (FeedbackInstance & { User: UserInstance })[]; // Ép kiểu feedbacks thành một mảng kết hợp
+      })) as (FeedbackInstance & { User: UserInstance })[];
 
       // Kiểm tra nếu User và avatar tồn tại
+
       feedbacks.forEach((feedback) => {
+        console.log(feedback.rating); // Kiểm tra giá trị rating
         if (feedback.User && feedback.User.avatar) {
-          // Kiểm tra nếu avatar là Buffer trước khi chuyển đổi sang base64
           if (Buffer.isBuffer(feedback.User.avatar)) {
             feedback.User.avatar = feedback.User.avatar.toString("base64");
           }
         }
       });
-
-      console.log("feed back : 11:", feedbacks[0]);
 
       // Nếu người dùng đã đăng nhập, lấy thông tin user
       let user = null;
@@ -79,7 +78,6 @@ export class FeedbackController extends ApplicationController {
       }
 
       // Render trang feedback
-
       res.render("feedback.view/index", {
         User: user,
         dishes,
@@ -94,6 +92,7 @@ export class FeedbackController extends ApplicationController {
       res.redirect("/error"); // Chuyển hướng đến trang lỗi (nếu có)
     }
   }
+
   // Phương thức POST để tạo mới feedback
 
   public async create(req: Request, res: Response) {

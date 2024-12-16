@@ -43,7 +43,7 @@ block main-content
                 option(value="" disabled selected) -- Select City --
                 // Fetch cities from the backend and list them as options dynamically
                 each city in City
-                  option(value=city.city_id) #{city.city_name}
+                  option(value=city.id) #{city.city_name}
 
 
             button.submit-buttons.btn.btn-primary.mt-3(type="submit") Submit
