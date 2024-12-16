@@ -1,86 +1,136 @@
 extends ../profile
 
 block main-content
-  h2 Registering Restaurant
-  form.profile-form(action='/api/v1/user/registering' method="POST" enctype="multipart/form-data")
-    .container-fluid
-      .row
-        .col-lg-4
-          .imageupload(style="display: flex; justify-content: center; align-items: center; background-color: #f0f0f0; width: 100%; height: 200px; border: 2px dashed #ccc; cursor: pointer; position: relative; overflow: hidden;")
-            img#preview.img-fluid(
-              style="max-width: 100%; max-height: 100%; object-fit: cover; display: none;"
-              alt="Preview"
-            )
-            label(for="file-input" style="color: #007bff; font-weight: bold; position: absolute;") + Upload Image
-            input#file-input.d-none(type="file" name="Restaurant")
+  html
+    head
+      link(rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css")
+      <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.3.0/dist/MarkerCluster.css" />
+      <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.3.0/dist/MarkerCluster.Default.css" />
+      script(src="https://unpkg.com/leaflet/dist/leaflet.js") 
+      style.
+        #suggestions {
+          position: absolute; /* Keep it absolute */
+          z-index: 1000; /* Ensure it's on top */
+          background: white; /* White background */
+          border: 1px solid #ddd; /* Border styling */
+          border-radius: 4px; /* Rounded corners */
+          max-height: 200px; /* Max height */
+          overflow-y: auto; /* Scrollable when too long */
+          width: calc(100% - 20px); /* Full width minus padding */
+          margin-top: 5px; /* Space between input and suggestions */
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Shadow */
+          display: none; /* Initially hidden */
+          padding: 0; /* Remove padding from the list */
+        }
 
-          script.
-            const inputTag = document.getElementById('file-input');
-            const previewImageTag = document.getElementById('preview');
-            inputTag.onchange = () => {
-              const [file] = inputTag.files;
-              if (file) {
-                previewImageTag.src = URL.createObjectURL(file);
-                previewImageTag.style.display = 'block';
-                document.querySelector('label[for="file-input"]').style.display = 'none';
-              }
-            }
+        #suggestions li {
+          padding: 10px; /* Padding for each item */
+          cursor: pointer; /* Pointer cursor on hover */
+          list-style: none; /* Remove default list styles */
+        }
 
+        #suggestions li:hover {
+          background-color: #f0f0f0; /* Background color on hover */
+        }
 
-        .col-lg-8
-          .form-group
-            label(for="restaurant_name") Restaurant Name:
-            input#restaurant_name.form-control(type="text" name="restaurant_name" placeholder="Restaurant Name" required)
-
-          .form-group
-            label(for="address") Address:
-            input#address.form-control(type="text" name="address" placeholder="Address" required)
-
-          .form-group
-            label(for="phone_number") Phone Number:
-            input#phone_number.form-control(type="text" name="phone_number" placeholder="Phone Number" required)
-
-          .form-group
-            label(for="main_dishes" style="margin-right: 140px;") Main Dishes:
-            select#city_id.form-control(name="main_dishes" required)
-              option(value="" disabled selected) -- Select a Main Dishes--
-              each main_dish in Main_dish
-                option(value=main_dish.id) #{main_dish.name}
-
-          .form-group
-            label(for="city_id" style="margin-right: 140px;") City:
-            select#city_id.form-control(name="city_id" required)
-              option(value="" disabled selected) -- Select a City --
-              each city in City
-                option(value=city.id) #{city.city_name}
-
-          .form-group
-            label(for="description") Description:
-            textarea#description.form-control(
-              name="description"
-              placeholder="Restaurant Description"
-              rows="4"
-              required
-              style="resize: vertical; margin-top: 5px;"
-            )
-
+    body     
+      h2 Registering Restaurant
+      form.profile-form(action='/api/v1/user/registering' method="POST" enctype="multipart/form-data")
+        .container-fluid
           .row
-            .col-lg-6
-              button.submit-buttons.btn.btn-primary(type="submit" style="margin-top: 15px;") Submit
+            .col-lg-4
+              .imageupload(style="display: flex; justify-content: center; align-items: center; background-color: #f0f0f0; width: 100%; height: 200px; border: 2px dashed #ccc; cursor: pointer; position: relative; overflow: hidden;")
+                img#preview.img-fluid(
+                  style="max-width: 100%; max-height: 100%; object-fit: cover; display: none;"
+                  alt="Preview"
+                )
+                label(for="file-input" style="color: #007bff; font-weight: bold; position: absolute;") + Upload Image
+                input#file-input.d-none(type="file" name="Restaurant")
 
-  hr
-  h3 User's Restaurants
-  .container-fluid
-    .row
-      each restaurant in UserRestaurants
-        .col-lg-4.col-md-6.mb-3
-          .card.shadow-sm.border-0.rounded-3
-            img.card-img-top.rounded-top(
-              src=restaurant.img_restaurant ? `data:image/jpeg;base64,${restaurant.img_restaurant.toString('base64')}` : "/images/img/about/3.jpg"
-              alt=restaurant.restaurant_name
-              style="height: 150px; object-fit: cover;"
-            )
-            .card-body.bg-white
-              h5.card-title.text-warning.font-weight-bold #{restaurant.restaurant_name}
-              p.card-text.text-muted #{restaurant.description}
-              a.btn.btn-primary(href=`/api/v1/user/dish_menu/${restaurant.id}`) Add Dishes
+              script.
+                const inputTag = document.getElementById('file-input');
+                const previewImageTag = document.getElementById('preview');
+                inputTag.onchange = () => {
+                  const [file] = inputTag.files;
+                  if (file) {
+                    previewImageTag.src = URL.createObjectURL(file);
+                    previewImageTag.style.display = 'block';
+                    document.querySelector('label[for="file-input"]').style.display = 'none';
+                  }
+                }
+
+            .col-lg-8
+              .form-group
+                label(for="restaurant_name") Restaurant Name:
+                input#restaurant_name.form-control(type="text" name="restaurant_name" placeholder="Restaurant Name" required)
+
+              .form-group
+                label(for="address") Address:
+                input#address.form-control(type="text" name="address" placeholder="Address" required)
+
+              .form-group
+                label(for="phone_number") Phone Number:
+                input#phone_number.form-control(type="text" name="phone_number" placeholder="Phone Number" required)
+
+              .form-group
+                label(for="main_dishes" style="margin-right: 140px;") Main Dishes:
+                select#main_dishes.form-control(name="main_dishes" required)
+                  option(value="" disabled selected) -- Select a Main Dishes--
+                  each main_dish in Main_dish
+                    option(value=main_dish.name) #{main_dish.name}
+
+              .form-group
+                label(for="city_id" style="margin-right: 140px;") City:
+                select#city_id.form-control(name="city_id" required)
+                  option(value="" disabled selected) -- Select a City --
+                  each city in City
+                    option(value=city.city_id data-lat=city.lat data-lng=city.lng) #{city.city_name}
+
+                button#search-city.btn.btn-secondary(type="button") Find City Location
+
+              .form-group
+                label(for="description") Description:
+                textarea#description.form-control(
+                  name="description"
+                  placeholder="Restaurant Description"
+                  rows="4"
+                  required
+                  style="resize: vertical; margin-top: 5px;"
+                )
+
+              // Thanh tìm kiếm địa chỉ
+              .form-group
+                input#address-search.form-control(type="text" placeholder="Nhập địa chỉ để tìm kiếm" autocomplete="off")
+                //- button#search-address.btn.btn-primary(type="button") Tìm Kiếm
+                ul#suggestions.suggestions(style="list-style-type: none; padding: 0; margin-top: 5px; display: none;")
+
+              // Bản đồ
+              .form-group
+                #map(style="height: 300px; width: 100%; margin-top: 20px;")
+                // Các trường ẩn để lưu tọa độ
+                input#latitude(type="hidden" name="latitude")
+                input#longitude(type="hidden" name="longitude")
+
+              .row
+                .col-lg-6
+                  button.submit-buttons.btn.btn-primary(type="submit" style="margin-top: 15px;") Submit
+
+      hr
+      h3 User's Restaurants
+      .container-fluid
+        .row
+          each restaurant in UserRestaurants
+            .col-lg-4.col-md-6.mb-3
+              .card.shadow-sm.border-0.rounded-3
+                img.card-img-top.rounded-top(
+                  src=restaurant.img_restaurant ? `data:image/jpeg;base64,${restaurant.img_restaurant.toString('base64')}` : "/images/img/about/3.jpg"
+                  alt=restaurant.restaurant_name
+                  style="height: 150px; object-fit: cover;"
+                )
+                .card-body.bg-white
+                  h5.card-title.text-warning.font-weight-bold #{restaurant.restaurant_name}
+                  p.card-text.text-muted #{restaurant.description}
+                  a.btn.btn-primary(href=`/api/v1/user/dish_menu/${restaurant.id}`) Add Dishes
+
+        script(type="module" src="/javascripts/map.js")
+

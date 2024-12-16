@@ -1,0 +1,40 @@
+#suggestions {
+  position: absolute;
+  /* Keep it absolute */
+  z-index: 1000;
+  /* Ensure it's on top */
+  background: white;
+  /* White background */
+  border: 1px solid #ddd;
+  /* Border styling */
+  border-radius: 4px;
+  /* Rounded corners */
+  max-height: 200px;
+  /* Max height */
+  overflow-y: auto;
+  /* Scrollable when too long */
+  width: calc(100% - 20px);
+  /* Full width minus padding */
+  margin-top: 5px;
+  /* Space between input and suggestions */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  /* Shadow */
+  display: none;
+  /* Initially hidden */
+  padding: 0;
+  /* Remove padding from the list */
+}
+
+#suggestions li {
+  padding: 10px;
+  /* Padding for each item */
+  cursor: pointer;
+  /* Pointer cursor on hover */
+  list-style: none;
+  /* Remove default list styles */
+}
+
+#suggestions li:hover {
+  background-color: #f0f0f0;
+  /* Background color on hover */
+}

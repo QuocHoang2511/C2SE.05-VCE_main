@@ -1,158 +1,164 @@
-let map;
-let currentMarker = null;
-let directionsService;
-let directionsRenderer;
-let userLocationMarker = null;
+let map; // Định nghĩa biến map ở cấp độ toàn cục
+let currentMarker; // Biến để lưu marker hiện tại
+let restaurantMarkers = []; // Mảng để lưu các marker đã có thông tin nhà hàng
+const addressInput = document.getElementById("address-search"); // Định nghĩa biến ở đây
+// Gán biến cho API Token
+const mapboxToken =
+  "sk.eyJ1IjoidHZoaWV1MjI3IiwiYSI6ImNtNHA5dHJpaTBtb2Iya3FxaGQ2Y3Y3YWEifQ.GL-ACRxZqWD8z6U9a-_gVg"; // Thay YOUR_MAPBOX_ACCESS_TOKEN bằng token của bạn
 
-// Initialize map
 function initMap() {
-  const center = { lat: 21.0285, lng: 105.8542 }; // Hà Nội (hoặc vị trí mặc định)
-  map = new google.maps.Map(document.getElementById("map"), {
-    center: center,
-    zoom: 12,
+  map = L.map("map").setView([21.0285, 105.8542], 13);
+
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    attribution: "&copy; OpenStreetMap contributors",
+  }).addTo(map);
+
+  // Thêm sự kiện nhấp chuột để lấy tọa độ
+  map.on("click", function (e) {
+    const { lat, lng } = e.latlng;
+    addMarker(lat, lng); // Chỉ thêm marker mới nếu chưa có marker nào
   });
 
-  // Initialize Directions API
-  directionsService = new google.maps.DirectionsService();
-  directionsRenderer = new google.maps.DirectionsRenderer();
-  directionsRenderer.setMap(map);
-
-  // Thêm search box để tìm kiếm địa điểm
-  addSearchBox();
-
-  // Hiển thị vị trí hiện tại của người dùng
-  showUserLocation();
-}
-
-// Hiển thị vị trí hiện tại của người dùng
-function showUserLocation() {
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        const userLat = position.coords.latitude;
-        const userLng = position.coords.longitude;
-        const userLocation = { lat: userLat, lng: userLng };
-
-        // Tạo một marker cho vị trí hiện tại
-        if (userLocationMarker) {
-          userLocationMarker.setMap(null); // Xóa marker cũ
-        }
-        userLocationMarker = new google.maps.Marker({
-          map: map,
-          position: userLocation,
-          title: "Your Current Location",
-          icon: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png", // Icon màu xanh cho vị trí người dùng
-        });
-
-        // Tập trung bản đồ vào vị trí người dùng
-        map.setCenter(userLocation);
-      },
-      () => {
-        alert("Geolocation failed or is not supported by this browser.");
-      }
-    );
-  } else {
-    alert("Geolocation is not supported by this browser.");
-  }
-}
-
-// Thêm thanh tìm kiếm địa điểm
-function addSearchBox() {
-  const input = document.getElementById("search-box");
-  const searchBox = new google.maps.places.SearchBox(input);
-
-  searchBox.addListener("places_changed", () => {
-    const places = searchBox.getPlaces();
-    if (places.length === 0) return;
-
-    // Lấy địa điểm đầu tiên từ kết quả tìm kiếm
-    const place = places[0];
-    if (!place.geometry || !place.geometry.location) return;
-
-    // Tạo marker cho địa điểm
-    if (currentMarker) {
-      currentMarker.setMap(null); // Xóa marker trước đó
+  // Thêm sự kiện cho thanh tìm kiếm địa chỉ
+  const addressInput = document.getElementById("address-search");
+  addressInput.addEventListener("input", () => {
+    const query = addressInput.value;
+    if (query.length > 2) {
+      fetchSuggestions(query);
+    } else {
+      document.getElementById("suggestions").style.display = "none"; // Ẩn gợi ý nếu không đủ ký tự
     }
-    currentMarker = new google.maps.Marker({
-      map: map,
-      position: place.geometry.location,
-      title: place.name,
-    });
-
-    map.setCenter(place.geometry.location);
-
-    // Cập nhật thông tin cho địa điểm được chọn
-    updateLocationInfo({
-      title: place.name || "Unknown",
-      coordinates: {
-        lat: place.geometry.location.lat(),
-        lng: place.geometry.location.lng(),
-      },
-      description: place.formatted_address || "No description available.",
-      restaurantName: "Restaurant Name: Example", // Dữ liệu mẫu
-      mainDish: "Main Dish: Pho", // Dữ liệu mẫu
-      backgroundImage: "background-image-url-here.jpg", // Dữ liệu mẫu
-    });
-
-    // Hiển thị form nhập thông tin
-    document.getElementById("info-form-container").style.display = "block";
   });
+
+  // Thêm sự kiện cho nút tìm kiếm địa chỉ
+  document.getElementById("search-address").onclick = () => {
+    const address = addressInput.value;
+    searchAddress(address);
+  };
 }
 
-// Cập nhật thông tin địa điểm vào sidebar
-function updateLocationInfo(info) {
-  // Cập nhật thông tin hiển thị trong sidebar
-  document.getElementById("info-title").innerText = `Title: ${info.title}`;
-  document.getElementById(
-    "info-coordinates"
-  ).innerText = `Coordinates: ${info.coordinates.lat}, ${info.coordinates.lng}`;
-  document.getElementById(
-    "info-description"
-  ).innerText = `Description: ${info.description}`;
-  document.getElementById(
-    "info-restaurant-name"
-  ).innerText = `Restaurant: ${info.restaurantName}`;
-  document.getElementById(
-    "info-main-dish"
-  ).innerText = `Main Dish: ${info.mainDish}`;
-  document.getElementById(
-    "info-background"
-  ).innerText = `Background Image: ${info.backgroundImage}`;
-
-  // Cập nhật trường nhập liệu để người dùng có thể chỉnh sửa
-  document.getElementById("restaurant-name").value = info.restaurantName;
-  document.getElementById("main-dish").value = info.mainDish;
-  document.getElementById("background-image").value = info.backgroundImage;
-
-  // Hiển thị thông tin trong InfoWindow
-  if (currentMarker) {
-    const infoWindow = new google.maps.InfoWindow({
-      content: `<h4>${info.restaurantName}</h4><p>Main Dish: ${info.mainDish}</p><img src="${info.backgroundImage}" alt="Background Image" style="width: 100%; height: auto;"/>`,
+// Hàm tìm kiếm gợi ý địa chỉ
+function fetchSuggestions(query) {
+  fetch(
+    `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
+      query
+    )}.json?access_token=${mapboxToken}`
+  )
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      return response.json();
+    })
+    .then((data) => {
+      const suggestions = document.getElementById("suggestions");
+      suggestions.innerHTML = ""; // Xóa gợi ý cũ
+      if (data.features.length > 0) {
+        suggestions.style.display = "block"; // Hiện gợi ý
+        data.features.forEach((item) => {
+          const li = document.createElement("li");
+          li.className = "list-group-item list-group-item-action";
+          li.textContent = item.place_name; // Hiển thị tên địa điểm
+          li.onclick = () => {
+            addressInput.value = item.place_name; // Gán giá trị cho input
+            suggestions.style.display = "none"; // Ẩn gợi ý sau khi chọn
+            addMarker(
+              item.geometry.coordinates[1],
+              item.geometry.coordinates[0]
+            ); // Thêm marker tại vị trí gợi ý
+            map.setView(
+              [item.geometry.coordinates[1], item.geometry.coordinates[0]],
+              13
+            ); // Di chuyển bản đồ đến vị trí gợi ý
+          };
+          suggestions.appendChild(li);
+        });
+      } else {
+        suggestions.style.display = "none"; // Ẩn gợi ý nếu không có kết quả
+      }
+    })
+    .catch((error) => {
+      console.error("Lỗi khi lấy gợi ý địa chỉ:", error);
+      alert("Có lỗi xảy ra khi tìm kiếm gợi ý địa chỉ.");
     });
-    infoWindow.open(map, currentMarker);
-  }
+}
+function getAddress(lat, lng) {
+  fetch(
+    `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`
+  )
+    .then((response) => response.json())
+    .then((data) => {
+      if (data && data.display_name) {
+        alert(`Địa chỉ: ${data.display_name}`);
+      }
+    })
+    .catch((error) => {
+      console.error("Lỗi khi lấy địa chỉ:", error);
+    });
 }
 
-// Cập nhật thông tin khi người dùng nhấn "Update Location Info"
-function handleUpdateInfo() {
-  const restaurantName = document.getElementById("restaurant-name").value;
-  const mainDish = document.getElementById("main-dish").value;
-  const backgroundImage = document.getElementById("background-image").value;
-
-  // Cập nhật thông tin trong sidebar và marker
+// Hàm thêm marker
+function addMarker(lat, lng) {
+  // Nếu có marker hiện tại, xóa nó
   if (currentMarker) {
-    const info = {
-      restaurantName: restaurantName,
-      mainDish: mainDish,
-      backgroundImage: backgroundImage,
-    };
-    updateLocationInfo(info);
+    map.removeLayer(currentMarker); // Xóa marker cũ
   }
+
+  // Tạo marker mới
+  currentMarker = L.marker([lat, lng]).addTo(map);
+  currentMarker.bindPopup(`Tọa độ: ${lat}, ${lng}`).openPopup();
+
+  // Lưu marker vào mảng
+  restaurantMarkers.push(currentMarker);
 }
 
-// Clear the route on the map
-function clearRoute() {
-  directionsRenderer.setDirections({ routes: [] });
+// Hàm tìm kiếm địa chỉ
+// Giả sử bạn đã có một element với id là 'result' để hiển thị kết quả tìm kiếm
+
+function searchAddress(query) {
+  fetch(
+    `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
+      query
+    )}.json?access_token=${mapboxToken}&country=vn&language=vi&bbox=102,8,110,24&types=address&limit=5`
+  )
+    .then((response) => response.json())
+    .then((data) => {
+      const resultsElement = document.getElementById("results");
+      resultsElement.innerHTML = "";
+
+      if (data.features.length > 0) {
+        data.features.forEach((feature) => {
+          const placeName = feature.place_name;
+          const context = feature.context;
+
+          // Tìm các thành phần địa chỉ chi tiết hơn từ context
+          const district = context.find((item) =>
+            item.id.startsWith("district")
+          );
+          const city = context.find((item) => item.id.startsWith("locality"));
+          const country = context.find((item) => item.id.startsWith("country"));
+
+          const resultItem = document.createElement("li");
+          resultItem.textContent = `${placeName} (${
+            district ? district.text : ""
+          }, ${city ? city.text : ""}, ${country ? country.text : ""})`;
+          resultsElement.appendChild(resultItem);
+
+          // Thêm sự kiện click để hiển thị marker trên bản đồ hoặc thực hiện các hành động khác
+          resultItem.addEventListener("click", () => {
+            const coordinates = feature.geometry.coordinates;
+            // Thêm marker vào bản đồ, ...
+          });
+        });
+      } else {
+        resultsElement.textContent = "Không tìm thấy kết quả";
+      }
+    })
+    .catch((error) => {
+      console.error("Lỗi khi tìm kiếm địa chỉ:", error);
+      resultsElement.textContent = "Có lỗi xảy ra khi tìm kiếm.";
+    });
 }
 
-window.initMap = initMap;
+// Khởi tạo bản đồ khi tài liệu đã tải xong
+document.addEventListener("DOMContentLoaded", initMap);
